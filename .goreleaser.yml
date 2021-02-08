@@ -1,0 +1,72 @@
+---
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - id: inspect-linux
+    main: ./cmd/inspect/inspect.go
+    binary: inspect
+    ldflags:
+      - -X github.com/garethjevans/inspect/pkg/version.Version={{.Version}} -X github.com/garethjevans/inspect/pkg/version.Revision={{.ShortCommit}} -X github.com/garethjevans/inspect/pkg/version.BuildDate={{.CommitDate}} -X github.com/garethjevans/inspect/pkg/version.BuiltBy=goreleaser
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - s390x
+      - ppc64le
+
+  - id: inspect-darwin
+    main: ./cmd/inspect/inspect.go
+    binary: inspect
+    ldflags:
+      - -X github.com/garethjevans/inspect/pkg/version.Version={{.Version}} -X github.com/garethjevans/inspect/pkg/version.Revision={{.ShortCommit}} -X github.com/garethjevans/inspect/pkg/version.BuildDate={{.CommitDate}} -X github.com/garethjevans/inspect/pkg/version.BuiltBy=goreleaser
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+
+  - id: inspect-windows-amd64
+    main: ./cmd/inspect/inspect.go
+    binary: inspect
+    ldflags:
+      - -X github.com/garethjevans/inspect/pkg/version.Version={{.Version}} -X github.com/garethjevans/inspect/pkg/version.Revision={{.ShortCommit}} -X github.com/garethjevans/inspect/pkg/version.BuildDate={{.CommitDate}} -X github.com/garethjevans/inspect/pkg/version.BuiltBy=goreleaser
+    goos:
+      - windows
+    goarch:
+      - amd64
+
+archives:
+  - name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "{{ .ProjectName }}-checksums.txt"
+  algorithm: sha256
+
+changelog:
+  skip: false
+
+release:
+  draft: false
+  prerelease: false
+  name_template: "{{.Tag}}"
+
+brews:
+  - name: inspect
+    tap:
+      owner: garethjevans
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
+    commit_author:
+      name: garethjevans
+      email: gareth@bryncynfelin.co.uk
+    folder: Formula
+    description: "Utility to inspect docker containers"
