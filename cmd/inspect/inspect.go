@@ -6,6 +6,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/garethjevans/inspect/pkg/util"
+
 	"github.com/garethjevans/inspect/pkg/cmd"
 
 	"github.com/garethjevans/inspect/pkg/version"
@@ -59,6 +61,8 @@ func init() {
 	})
 
 	RootCmd.AddCommand(cmd.NewInspectCmd())
+	RootCmd.AddCommand(cmd.NewBuildArgsCmd())
+	RootCmd.AddCommand(cmd.NewLabelsCmd())
 
 	RootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		if Verbose {
@@ -160,6 +164,7 @@ Homebrew, see <https://docs.brew.sh/Shell-Completion>
 }
 
 func main() {
+	logrus.SetFormatter(util.NewTextFormat())
 	if err := RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
