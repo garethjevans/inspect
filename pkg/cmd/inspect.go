@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -27,7 +28,7 @@ func NewInspectCmd() *cobra.Command {
 		Short:   "Inspect the docker container",
 		Long:    "",
 		Example: "",
-		Aliases: []string{"i", "in", "ins"},
+		Aliases: []string{"i", "in", "ins", "image"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
@@ -36,7 +37,7 @@ func NewInspectCmd() *cobra.Command {
 				logrus.Fatalf("unable to run command: %s", err)
 			}
 		},
-		Args: cobra.NoArgs,
+		Args: cobra.MaximumNArgs(1),
 	}
 
 	cmd.Flags().StringVarP(&c.Repository, "repository", "r", "",
@@ -49,7 +50,19 @@ func NewInspectCmd() *cobra.Command {
 
 func (c *InspectCmd) Run() error {
 	client := inspect.Client{
-		Client: http.Client{},
+		Client: &http.Client{},
+	}
+
+	if len(c.Args) == 1 {
+		c.Repository, c.Tag = ParseRepo(c.Args[0])
+	}
+
+	if c.Repository == "" {
+		return errors.New("no repository has been configured")
+	}
+
+	if c.Tag == "" {
+		return errors.New("no tag has been configured")
 	}
 
 	labels, err := client.Labels(c.Repository, c.Tag)
@@ -78,4 +91,22 @@ func (c *InspectCmd) Run() error {
 	t.Render()
 
 	return nil
+}
+
+func ParseRepo(in string) (string, string) {
+	if !strings.Contains(in, ":") {
+		return in, "latest"
+	}
+
+	// look for sha first
+	if strings.Contains(in, "@") {
+		parts := strings.SplitN(in, "@", 2)
+		return parts[0], parts[1]
+	}
+
+	parts := strings.SplitN(in, ":", 2)
+	if parts[1] == "" {
+		return parts[0], "latest"
+	}
+	return parts[0], parts[1]
 }
