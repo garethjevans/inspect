@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/garethjevans/inspect/pkg/util"
@@ -11,15 +10,17 @@ import (
 )
 
 type BuildArgsCmd struct {
-	Cmd           *cobra.Command
-	Args          []string
-	CommandRunner util.CommandRunner
-	Log           Logs
+	BaseCmd
+	Cmd  *cobra.Command
+	Args []string
+	Log  Logs
 }
 
 func NewBuildArgsCmd() *cobra.Command {
 	c := &BuildArgsCmd{
-		CommandRunner: util.DefaultCommandRunner{},
+		BaseCmd: BaseCmd{
+			CommandRunner: util.DefaultCommandRunner{},
+		},
 	}
 
 	c.Log = c
@@ -45,76 +46,44 @@ func NewBuildArgsCmd() *cobra.Command {
 }
 
 func (c *BuildArgsCmd) Run() error {
-	gitCommitRevCommand := util.Command{
-		Name: "git",
-		Args: []string{"log", "-n", "1", "--pretty=format:%h"},
-	}
+	commands := []string{}
 
-	out, err := c.CommandRunner.RunWithoutRetry(&gitCommitRevCommand)
+	gitCommitRev, err := c.GitCommitRev()
 	if err != nil {
 		return err
 	}
 
-	c.Log.Println(fmt.Sprintf("GIT_COMMIT_REV=%s", out))
+	commands = append(commands, fmt.Sprintf("\"GIT_COMMIT_REV=%s\"", gitCommitRev))
 
-	gitScmURLCommand := util.Command{
-		Name: "git",
-		Args: []string{"config", "--get", "remote.origin.url"},
-	}
-
-	out, err = c.CommandRunner.RunWithoutRetry(&gitScmURLCommand)
+	gitScmURL, err := c.GitScmURL()
 	if err != nil {
 		return err
 	}
 
-	out = strings.ReplaceAll(out, "git@github.com:", "https://github.com/")
+	commands = append(commands, fmt.Sprintf("\"GIT_SCM_URL=%s\"", gitScmURL))
 
-	c.Log.Println(fmt.Sprintf("GIT_SCM_URL=%s", out))
-
-	buildDate := util.Command{
-		Name: "date",
-		Args: []string{"--utc", "+%Y-%m-%dT%H:%M:%S"},
-	}
-
-	out, err = c.CommandRunner.RunWithoutRetry(&buildDate)
+	buildDate, err := c.BuildDate()
 	if err != nil {
 		return err
 	}
 
-	c.Log.Println(fmt.Sprintf("BUILD_DATE=%s", out))
+	commands = append(commands, fmt.Sprintf("\"BUILD_DATE=%s\"", buildDate))
 
-	goVersionCommand := util.Command{
-		Name: "go",
-		Args: []string{"version"},
-	}
-
-	out, err = c.CommandRunner.RunWithoutRetry(&goVersionCommand)
+	goVersion, err := c.GoVersion()
 	if err != nil {
 		return err
 	}
 
-	re := regexp.MustCompile(`\d+(\.\d+)+`)
-	goVersion := re.FindString(out)
-	c.Log.Println(fmt.Sprintf("GO_VERSION=%s", goVersion))
+	commands = append(commands, fmt.Sprintf("\"GO_VERSION=%s\"", goVersion))
 
-	gitStatusCommand := util.Command{
-		Name: "git",
-		Args: []string{"status", "--porcelain"},
-	}
-
-	out, err = c.CommandRunner.RunWithoutRetry(&gitStatusCommand)
+	gitTreeState, err := c.GitTreeState()
 	if err != nil {
 		return err
 	}
 
-	var gitTreeState string
-	if out == "" {
-		gitTreeState = "clean"
-	} else {
-		gitTreeState = "dirty"
-	}
+	commands = append(commands, fmt.Sprintf("\"GIT_TREE_STATE=%s\"", gitTreeState))
 
-	c.Log.Println(fmt.Sprintf("GIT_TREE_STATE=%s", gitTreeState))
+	c.Log.Println("--build-arg " + strings.Join(commands, " --build-arg "))
 
 	//--label "org.opencontainers.image.source=$(GIT_SCM_URL)" \
 	//--label "org.label-schema.vcs-url=$(GIT_SCM_URL)" \
