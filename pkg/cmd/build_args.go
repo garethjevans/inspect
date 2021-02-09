@@ -97,10 +97,6 @@ func (c *BuildArgsCmd) Run() error {
 	return nil
 }
 
-type Logs interface {
-	Println(message string)
-}
-
 func (c *BuildArgsCmd) Println(message string) {
 	fmt.Println(message)
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBuildArgs(t *testing.T) {
+func TestLabelsCmd(t *testing.T) {
 	logger := &mock.LoggerMock{}
 	commandRunner := &mocks.MockCommandRunner{}
 	mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
@@ -36,7 +36,7 @@ func TestBuildArgs(t *testing.T) {
 		return "", errors.New("unknown command")
 	}
 
-	c := cmd.BuildArgsCmd{
+	c := cmd.LabelsCmd{
 		Log: logger,
 		BaseCmd: cmd.BaseCmd{
 			CommandRunner: commandRunner,
@@ -46,9 +46,12 @@ func TestBuildArgs(t *testing.T) {
 	err := c.Run()
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, "--build-arg \"GIT_COMMIT_REV=sha123456\""+
-		" --build-arg \"GIT_SCM_URL=https://github.com/org/repo.git\""+
-		" --build-arg \"BUILD_DATE=2021-02-09T15:42:29\""+
-		" --build-arg \"GO_VERSION=1.15.6\""+
-		" --build-arg \"GIT_TREE_STATE=dirty\"", logger.Messages[0])
+	assert.Equal(t, "--label \"org.opencontainers.image.revision=sha123456\""+
+		" --label \"org.label-schema.vcs-ref=sha123456\""+
+		" --label \"org.opencontainers.image.url=https://github.com/org/repo.git\""+
+		" --label \"org.label-schema.url=https://github.com/org/repo.git\""+
+		" --label \"org.opencontainers.image.created=2021-02-09T15:42:29\""+
+		" --label \"org.label-schema.build-date=2021-02-09T15:42:29\""+
+		" --label \"io.jenkins-infra.go.version=1.15.6\""+
+		" --label \"io.jenkins-infra.tree.state=dirty\"", logger.Messages[0])
 }
