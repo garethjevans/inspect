@@ -60,9 +60,10 @@ func init() {
 		return &FlagError{Err: err}
 	})
 
-	RootCmd.AddCommand(cmd.NewInspectCmd())
+	RootCmd.AddCommand(cmd.NewImageCmd())
 	RootCmd.AddCommand(cmd.NewBuildArgsCmd())
 	RootCmd.AddCommand(cmd.NewLabelsCmd())
+	RootCmd.AddCommand(cmd.NewDiffCmd())
 
 	RootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		if Verbose {

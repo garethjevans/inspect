@@ -1,5 +1,11 @@
 package inspect
 
+import (
+	"fmt"
+	"strings"
+)
+
+// TokenResponse struct containing the response of a token request.
 type TokenResponse struct {
 	Token string `json:"token"`
 }
@@ -10,6 +16,7 @@ type Config struct {
 	Digest    string `json:"digest"`
 }
 
+// ManifestResponse a struct containing all the details for a manifest response.
 type ManifestResponse struct {
 	SchemaVersion int      `json:"schemaVersion"`
 	MediaType     string   `json:"mediaType"`
@@ -17,11 +24,13 @@ type ManifestResponse struct {
 	Layers        []Config `json:"layers"`
 }
 
+// BlobResponse a struct containing all the details for a blob response.
 type BlobResponse struct {
 	Architecture string     `json:"architecture"`
 	Config       BlobDetail `json:"config"`
 }
 
+// BlobDetail the details of a blob layer.
 type BlobDetail struct {
 	Cmd          []string `json:"Cmd"`
 	Entrypoint   []string `json:"Entrypoint"`
@@ -41,4 +50,28 @@ type BlobDetail struct {
 	// Volumes
 	//"ExposedPorts":{"389/tcp":{},"636/tcp”:{}}
 	Labels map[string]string `json:"Labels"`
+}
+
+// SourceURL Gets the SourceURL for the revision.
+func SourceURL(labels map[string]string) string {
+	return labels["org.opencontainers.image.source"]
+}
+
+// GitHubURL Gets the GitHubUrl for the revision.
+func GitHubURL(labels map[string]string) string {
+	return fmt.Sprintf("%s/tree/%s", BaseURL(labels), Revision(labels))
+}
+
+// BaseURL Gets the base source url without the .git suffix.
+func BaseURL(labels map[string]string) string {
+	gitURL := SourceURL(labels)
+	if strings.HasSuffix(gitURL, ".git") {
+		gitURL = strings.TrimSuffix(gitURL, ".git")
+	}
+	return gitURL
+}
+
+// Revision get the commit revision for this image.
+func Revision(labels map[string]string) string {
+	return labels["org.opencontainers.image.revision"]
 }
