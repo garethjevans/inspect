@@ -77,6 +77,7 @@ func init() {
 	RootCmd.AddCommand(cmd.NewBuildArgsCmd())
 	RootCmd.AddCommand(cmd.NewLabelsCmd())
 	RootCmd.AddCommand(cmd.NewDiffCmd())
+	RootCmd.AddCommand(cmd.NewCheckCmd())
 
 	RootCmd.PersistentPreRun = func(command *cobra.Command, args []string) {
 		if Verbose {

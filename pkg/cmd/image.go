@@ -42,7 +42,7 @@ func NewImageCmd() *cobra.Command {
 				logrus.Fatalf("unable to run command: %s", err)
 			}
 		},
-		Args: cobra.MaximumNArgs(1),
+		Args: cobra.MinimumNArgs(1),
 	}
 
 	return cmd
