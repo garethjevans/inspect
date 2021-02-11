@@ -82,7 +82,7 @@ func init() {
 		}
 
 		if Raw {
-			cmd.TableStyle = table.Style {
+			cmd.TableStyle = table.Style{
 				Name:    "Raw",
 				Box:     table.StyleBoxDefault,
 				Color:   table.ColorOptionsDefault,
