@@ -55,3 +55,34 @@ Will produce an output similar to:
 | GitHub URL                               | https://github.com/jenkins-infra/docker-terraform/tree/d25f040 |
 +------------------------------------------+----------------------------------------------------------------+
 ```
+
+To perform a diff between two images: 
+
+```
+inspect diff jenkinsciinfra/terraform:1.0.0 jenkinsciinfra/terraform:1.1.0
+```
+
+Will produce output like:
+
+```
++------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+| IMAGE                                    | 1                                                              | 2                                                              |
++------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+| jenkinsciinfra/terraform                 | 1.0.0                                                          | 1.1.0                                                          |
++------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+| io.jenkins-infra.tools.terraform.version | 0.13.6                                                         | 0.13.6                                                         |
+| org.label-schema.build-date              | 2021-01-27T08:34:20Z                                           | 2021-01-28T10:21:25Z                                           |
+| org.label-schema.vcs-ref                 | ad902ec                                                        | 441c261                                                        |
+| org.label-schema.vcs-url                 | https://github.com/jenkins-infra/docker-terraform.git          | https://github.com/jenkins-infra/docker-terraform.git          |
+| org.opencontainers.image.created         | 2021-01-27T08:34:20Z                                           | 2021-01-28T10:21:25Z                                           |
+| org.opencontainers.image.source          | https://github.com/jenkins-infra/docker-terraform.git          | https://github.com/jenkins-infra/docker-terraform.git          |
+| io.jenkins-infra.tools                   | golang,terraform                                               | golang,terraform                                               |
+| org.label-schema.url                     | https://github.com/jenkins-infra/docker-terraform.git          | https://github.com/jenkins-infra/docker-terraform.git          |
+| org.opencontainers.image.revision        | ad902ec                                                        | 441c261                                                        |
+| org.opencontainers.image.url             | https://github.com/jenkins-infra/docker-terraform.git          | https://github.com/jenkins-infra/docker-terraform.git          |
+| io.jenkins-infra.tools.golang.version    | 1.15                                                           | 1.15                                                           |
++------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+| GitHub URL                               | https://github.com/jenkins-infra/docker-terraform/tree/ad902ec | https://github.com/jenkins-infra/docker-terraform/tree/441c261 |
++------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+https://github.com/jenkins-infra/docker-terraform/compare/ad902ec..441c261
+```
