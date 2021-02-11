@@ -14,7 +14,6 @@ type LabelsCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
 	Args []string
-	Log  Logs
 }
 
 // NewLabelsCmd struct for the labels command.
@@ -92,9 +91,4 @@ func (c *LabelsCmd) Run() error {
 	c.Log.Println("--label " + strings.Join(commands, " --label "))
 
 	return nil
-}
-
-// Println a helper to allow this to be mocked out.
-func (c *LabelsCmd) Println(message string) {
-	fmt.Println(message)
 }

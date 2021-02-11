@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/garethjevans/inspect/pkg/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -13,7 +11,6 @@ type ClusterCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
 	Args []string
-	Log  Logs
 }
 
 // NewClusterCmd creates a new cluster command.
@@ -59,9 +56,4 @@ func (c *ClusterCmd) Run() error {
 	// extract the labels for each
 
 	return nil
-}
-
-// Println a helper to allow this to be mocked out.
-func (c *ClusterCmd) Println(message string) {
-	fmt.Println(message)
 }

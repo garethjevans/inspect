@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/garethjevans/inspect/pkg/util"
 )
 
+// BaseCmd a common type to contain all the git helper methods.
 type BaseCmd struct {
 	CommandRunner util.CommandRunner
+	Log           Logger
 }
 
 // GitCommitRev helper to return the git commit rev.
@@ -94,4 +97,9 @@ func (b *BaseCmd) GitTreeState() (string, error) {
 	}
 
 	return gitTreeState, nil
+}
+
+// Println a helper to allow this to be mocked out.
+func (b *BaseCmd) Println(message string) {
+	fmt.Println(message)
 }

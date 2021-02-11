@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 	"net/http"
-	"os"
+	"sort"
+	"strings"
 
 	"github.com/fatih/color"
 
@@ -19,9 +20,9 @@ var (
 
 // DiffCmd a struct for the diff command.
 type DiffCmd struct {
+	BaseCmd
 	Cmd    *cobra.Command
 	Args   []string
-	Log    Logs
 	Client inspect.Client
 }
 
@@ -86,24 +87,26 @@ func (c *DiffCmd) Run() error {
 	}
 
 	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(TableStyle)
+	sb := strings.Builder{}
+	t.SetOutputMirror(&sb)
+	t.SetStyle(tableStyle)
 
-	if Headers {
+	if headers {
 		t.AppendHeader(table.Row{"Image", "1", "2"})
 	}
 
-	if WriteSeparators {
+	if writeSeparators {
 		t.AppendSeparator()
 	}
 
 	t.AppendRow(table.Row{repo1, tag1, tag2})
 
-	if WriteSeparators {
+	if writeSeparators {
 		t.AppendSeparator()
 	}
 
 	keys := AllKeys(labels1, labels2)
+	sort.Strings(keys)
 
 	for _, k := range keys {
 		if labels1[k] == labels2[k] {
@@ -113,7 +116,7 @@ func (c *DiffCmd) Run() error {
 		}
 	}
 
-	if WriteSeparators {
+	if writeSeparators {
 		t.AppendSeparator()
 	}
 	t.AppendRow(table.Row{
@@ -122,14 +125,17 @@ func (c *DiffCmd) Run() error {
 		inspect.GitHubURL(labels2),
 	})
 
-	t.Render()
+	if enableMarkdown {
+		t.RenderMarkdown()
+	} else {
+		t.Render()
+	}
 
+	// write the table
+	c.Log.Println(sb.String())
+
+	// write the compare link
 	c.Log.Println(fmt.Sprintf("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2)))
 
 	return nil
-}
-
-// Println a helper to allow this to be mocked out.
-func (c *DiffCmd) Println(message string) {
-	fmt.Println(message)
 }

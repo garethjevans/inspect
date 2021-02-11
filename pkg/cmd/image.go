@@ -3,7 +3,8 @@ package cmd
 import (
 	"errors"
 	"net/http"
-	"os"
+	"sort"
+	"strings"
 
 	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -13,6 +14,7 @@ import (
 
 // ImageCmd struct for the image command.
 type ImageCmd struct {
+	BaseCmd
 	Cmd    *cobra.Command
 	Args   []string
 	Client inspect.Client
@@ -25,6 +27,7 @@ func NewImageCmd() *cobra.Command {
 			Client: &http.Client{},
 		},
 	}
+	c.Log = c
 	cmd := &cobra.Command{
 		Use:     "image <name>...",
 		Short:   "Inspect the docker container",
@@ -67,27 +70,40 @@ func (c *ImageCmd) Run() error {
 		}
 
 		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.SetStyle(TableStyle)
 
-		if Headers {
+		sb := strings.Builder{}
+		t.SetOutputMirror(&sb)
+		t.SetStyle(tableStyle)
+
+		if headers {
 			t.AppendHeader(table.Row{"Label", "Value"})
 		}
 
-		if WriteSeparators {
+		if writeSeparators {
 			t.AppendSeparator()
 		}
 
-		for k, v := range labels {
-			t.AppendRow(table.Row{k, v})
+		keys := AllKeys(labels)
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			t.AppendRow(table.Row{k, labels[k]})
 		}
 
-		if WriteSeparators {
+		if writeSeparators {
 			t.AppendSeparator()
 		}
+
 		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
 
-		t.Render()
+		if enableMarkdown {
+			t.RenderMarkdown()
+		} else {
+			t.Render()
+		}
+
+		// write the table
+		c.Log.Println(sb.String())
 	}
 	return nil
 }

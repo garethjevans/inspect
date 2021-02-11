@@ -37,8 +37,8 @@ func TestBuildArgs(t *testing.T) {
 	}
 
 	c := cmd.BuildArgsCmd{
-		Log: logger,
 		BaseCmd: cmd.BaseCmd{
+			Log:           logger,
 			CommandRunner: commandRunner,
 		},
 	}
