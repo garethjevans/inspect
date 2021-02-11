@@ -50,7 +50,13 @@ func NewClusterCmd() *cobra.Command {
 func (c *ClusterCmd) Run() error {
 	// connect with local kubeconfig
 
-	//
+	// TODO
+
+	// get a list of all pods
+
+	// get the images for all containers in the pod.
+
+	// extract the labels for each
 
 	return nil
 }
