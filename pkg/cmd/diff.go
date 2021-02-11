@@ -17,6 +17,7 @@ var (
 	colorError = color.New(color.FgRed).SprintFunc()
 )
 
+// DiffCmd a struct for the diff command.
 type DiffCmd struct {
 	Cmd    *cobra.Command
 	Args   []string
@@ -24,6 +25,7 @@ type DiffCmd struct {
 	Client inspect.Client
 }
 
+// NewDiffCmd creates a new diff command.
 func NewDiffCmd() *cobra.Command {
 	c := &DiffCmd{
 		Client: inspect.Client{
@@ -53,13 +55,21 @@ func NewDiffCmd() *cobra.Command {
 	return cmd
 }
 
+// Run runs the command.
 func (c *DiffCmd) Run() error {
 	image1 := c.Args[0]
 	image2 := c.Args[1]
 
 	logrus.Debugf("comparing %s and %s", image1, image2)
-	repo1, tag1 := ParseRepo(image1)
-	repo2, tag2 := ParseRepo(image2)
+	repo1, tag1, err := ParseRepo(image1)
+	if err != nil {
+		return err
+	}
+
+	repo2, tag2, err := ParseRepo(image2)
+	if err != nil {
+		return err
+	}
 
 	if repo1 != repo2 {
 		return fmt.Errorf("images do not appear to be from the git repo 1=%s, 2=%s", repo1, repo2)

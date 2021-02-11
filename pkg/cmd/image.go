@@ -16,9 +16,6 @@ type ImageCmd struct {
 	Cmd    *cobra.Command
 	Args   []string
 	Client inspect.Client
-
-	Repository string
-	Tag        string
 }
 
 // NewImageCmd creates a new ImageCmd.
@@ -29,7 +26,7 @@ func NewImageCmd() *cobra.Command {
 		},
 	}
 	cmd := &cobra.Command{
-		Use:     "image <name>",
+		Use:     "image <name>...",
 		Short:   "Inspect the docker container",
 		Long:    "",
 		Example: "",
@@ -45,55 +42,52 @@ func NewImageCmd() *cobra.Command {
 		Args: cobra.MaximumNArgs(1),
 	}
 
-	cmd.Flags().StringVarP(&c.Repository, "repository", "r", "",
-		"Repository to query")
-	cmd.Flags().StringVarP(&c.Tag, "tag", "t", "",
-		"Tag to query")
-
 	return cmd
 }
 
 // Run runs the command.
 func (c *ImageCmd) Run() error {
-	if len(c.Args) == 1 {
-		c.Repository, c.Tag = ParseRepo(c.Args[0])
+	for _, a := range c.Args {
+		repo, tag, err := ParseRepo(a)
+		if err != nil {
+			return err
+		}
+
+		if repo == "" {
+			return errors.New("no repository has been configured")
+		}
+
+		if tag == "" {
+			return errors.New("no tag has been configured")
+		}
+
+		labels, err := c.Client.Labels(repo, tag)
+		if err != nil {
+			return err
+		}
+
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.SetStyle(TableStyle)
+
+		if Headers {
+			t.AppendHeader(table.Row{"Label", "Value"})
+		}
+
+		if WriteSeparators {
+			t.AppendSeparator()
+		}
+
+		for k, v := range labels {
+			t.AppendRow(table.Row{k, v})
+		}
+
+		if WriteSeparators {
+			t.AppendSeparator()
+		}
+		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
+
+		t.Render()
 	}
-
-	if c.Repository == "" {
-		return errors.New("no repository has been configured")
-	}
-
-	if c.Tag == "" {
-		return errors.New("no tag has been configured")
-	}
-
-	labels, err := c.Client.Labels(c.Repository, c.Tag)
-	if err != nil {
-		return err
-	}
-
-	t := table.NewWriter()
-	t.SetOutputMirror(os.Stdout)
-	t.SetStyle(TableStyle)
-
-	if Headers {
-		t.AppendHeader(table.Row{"Label", "Value"})
-	}
-
-	if WriteSeparators {
-		t.AppendSeparator()
-	}
-
-	for k, v := range labels {
-		t.AppendRow(table.Row{k, v})
-	}
-
-	if WriteSeparators {
-		t.AppendSeparator()
-	}
-	t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
-
-	t.Render()
-
 	return nil
 }
