@@ -29,7 +29,7 @@ type TextFormat struct {
 	TimestampFormat string
 }
 
-// NewTextFormat creates the default Jenkins X text formatter.
+// NewTextFormat creates the default text formatter.
 func NewTextFormat() *TextFormat {
 	return &TextFormat{
 		ShowInfoLevel:   false,

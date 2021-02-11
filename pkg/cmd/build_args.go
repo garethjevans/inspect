@@ -14,7 +14,6 @@ type BuildArgsCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
 	Args []string
-	Log  Logs
 }
 
 // NewBuildArgsCmd creates a new build args command.
@@ -89,9 +88,4 @@ func (c *BuildArgsCmd) Run() error {
 	c.Log.Println("--build-arg " + strings.Join(commands, " --build-arg "))
 
 	return nil
-}
-
-// Println a helper to allow this to be mocked out.
-func (c *BuildArgsCmd) Println(message string) {
-	fmt.Println(message)
 }

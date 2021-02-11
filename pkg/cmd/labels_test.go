@@ -37,8 +37,8 @@ func TestLabelsCmd(t *testing.T) {
 	}
 
 	c := cmd.LabelsCmd{
-		Log: logger,
 		BaseCmd: cmd.BaseCmd{
+			Log:           logger,
 			CommandRunner: commandRunner,
 		},
 	}

@@ -6,8 +6,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/jedib0t/go-pretty/v6/table"
-
 	"github.com/garethjevans/inspect/pkg/util"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
@@ -86,24 +84,15 @@ func init() {
 		}
 
 		if Raw {
-			cmd.TableStyle = table.Style{
-				Name:    "Raw",
-				Box:     table.StyleBoxDefault,
-				Color:   table.ColorOptionsDefault,
-				Format:  table.FormatOptionsDefault,
-				HTML:    table.DefaultHTMLOptions,
-				Options: table.OptionsNoBordersAndSeparators,
-				Title:   table.TitleOptionsDefault,
-			}
-			cmd.WriteSeparators = false
+			cmd.Raw()
 		}
 
 		if NoHeaders {
-			cmd.Headers = false
+			cmd.DisableHeaders()
 		}
 
 		if Markdown {
-			cmd.EnableMarkdown = true
+			cmd.EnableMarkdown()
 		}
 	}
 

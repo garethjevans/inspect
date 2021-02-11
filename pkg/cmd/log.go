@@ -1,6 +1,6 @@
 package cmd
 
-// Logs an interface to allow mocking out of the Println func.
-type Logs interface {
+// Logger an interface to allow mocking out of the Println func.
+type Logger interface {
 	Println(message string)
 }

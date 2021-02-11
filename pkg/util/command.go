@@ -33,6 +33,7 @@ type CommandError struct {
 	cause   error
 }
 
+// Error returns a sanitised error message.
 func (c CommandError) Error() string {
 	// sanitise any password arguments before printing the error string. The actual sensitive argument is still present
 	// in the Command object
@@ -120,6 +121,7 @@ func (c *Command) Error() error {
 	return nil
 }
 
+// String string representation of this command.
 func (c *Command) String() string {
 	var builder strings.Builder
 	for k, v := range c.Env {
@@ -136,6 +138,7 @@ func (c *Command) String() string {
 	return builder.String()
 }
 
+// DefaultCommandRunner the default implementation of this, will actually execute things.
 type DefaultCommandRunner struct {
 }
 
