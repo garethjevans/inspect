@@ -59,7 +59,7 @@ func init() {
 
 	RootCmd.PersistentFlags().Bool("help", false, "Show help for command")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "debug", "v", false, "Debug Output")
-	RootCmd.PersistentFlags().BoolVarP(&Raw, "raw", "r", false, "Display all tables in raw format")
+	RootCmd.PersistentFlags().BoolVarP(&Raw, "raw", "", false, "Display all tables in raw format")
 	RootCmd.PersistentFlags().BoolVarP(&NoHeaders, "no-headers", "", false, "Do not display table headers")
 
 	RootCmd.Flags().Bool("version", false, "Show version")
