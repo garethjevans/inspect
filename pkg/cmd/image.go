@@ -87,7 +87,11 @@ func (c *ImageCmd) Run() error {
 		}
 		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
 
-		t.Render()
+		if EnableMarkdown {
+			t.RenderMarkdown()
+		} else {
+			t.Render()
+		}
 	}
 	return nil
 }

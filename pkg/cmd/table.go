@@ -6,4 +6,5 @@ var (
 	TableStyle      = table.StyleDefault
 	WriteSeparators = true
 	Headers         = true
+	EnableMarkdown = false
 )

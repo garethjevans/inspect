@@ -122,7 +122,11 @@ func (c *DiffCmd) Run() error {
 		inspect.GitHubURL(labels2),
 	})
 
-	t.Render()
+	if EnableMarkdown {
+		t.RenderMarkdown()
+	} else {
+		t.Render()
+	}
 
 	c.Log.Println(fmt.Sprintf("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2)))
 

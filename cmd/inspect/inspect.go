@@ -34,6 +34,9 @@ var Raw bool
 // NoHeaders do not write table headers.
 var NoHeaders bool
 
+// Markdown all tables should be written in markdown format.
+var Markdown bool
+
 // BuildDate is dynamically set at build time in the Makefile.
 var BuildDate = version.BuildDate
 
@@ -59,8 +62,9 @@ func init() {
 
 	RootCmd.PersistentFlags().Bool("help", false, "Show help for command")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "debug", "v", false, "Debug Output")
-	RootCmd.PersistentFlags().BoolVarP(&Raw, "raw", "", false, "Display all tables in raw format")
+	RootCmd.PersistentFlags().BoolVarP(&Raw, "raw", "r", false, "Display all tables in raw format")
 	RootCmd.PersistentFlags().BoolVarP(&NoHeaders, "no-headers", "", false, "Do not display table headers")
+	RootCmd.PersistentFlags().BoolVarP(&Markdown, "markdown", "m", false, "Display all tables in Markdown format")
 
 	RootCmd.Flags().Bool("version", false, "Show version")
 
@@ -96,6 +100,10 @@ func init() {
 
 		if NoHeaders {
 			cmd.Headers = false
+		}
+
+		if Markdown {
+			cmd.EnableMarkdown = true
 		}
 	}
 
