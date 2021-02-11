@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/garethjevans/inspect/pkg/inspect"
@@ -14,9 +15,10 @@ import (
 // CheckCmd struct for the check command.
 type CheckCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
-	Client inspect.Client
+	Cmd                  *cobra.Command
+	Args                 []string
+	Client               inspect.Client
+	FailOnRecommendation bool
 }
 
 // NewCheckCmd creates a new CheckCmd.
@@ -44,11 +46,13 @@ func NewCheckCmd() *cobra.Command {
 		Args: cobra.MinimumNArgs(1),
 	}
 
+	cmd.Flags().BoolVarP(&c.FailOnRecommendation, "fail-on-recommendations", "f", false, "Should exit 1 if there are recommendations")
 	return cmd
 }
 
 // Run runs the command.
 func (c *CheckCmd) Run() error {
+	r := false
 	for _, a := range c.Args {
 		repo, tag, err := ParseRepo(a)
 		if err != nil {
@@ -82,33 +86,10 @@ func (c *CheckCmd) Run() error {
 			t.AppendSeparator()
 		}
 
-		created := labels["org.opencontainers.image.created"]
-		if created == "" {
-			t.AppendRow(table.Row{"org.opencontainers.image.created", "Missing", "date --utc +%Y-%m-%dT%H:%M:%S"})
-		} else {
-			t.AppendRow(table.Row{"org.opencontainers.image.created", "OK", ""})
-		}
-
-		revision := labels["org.opencontainers.image.revision"]
-		if revision == "" {
-			t.AppendRow(table.Row{"org.opencontainers.image.revision", "Missing", "git log -n 1 --pretty=format:%h"})
-		} else {
-			t.AppendRow(table.Row{"org.opencontainers.image.revision", "OK", ""})
-		}
-
-		source := labels["org.opencontainers.image.source"]
-		if source == "" {
-			t.AppendRow(table.Row{"org.opencontainers.image.source", "Missing", "git config --get remote.origin.url"})
-		} else {
-			t.AppendRow(table.Row{"org.opencontainers.image.source", "OK", ""})
-		}
-
-		url := labels["org.opencontainers.image.url"]
-		if url == "" {
-			t.AppendRow(table.Row{"org.opencontainers.image.url", "Missing", "git config --get remote.origin.url"})
-		} else {
-			t.AppendRow(table.Row{"org.opencontainers.image.url", "OK", ""})
-		}
+		r = recommendationRow("org.opencontainers.image.created", "date --utc +%Y-%m-%dT%H:%M:%S", labels, t, r)
+		r = recommendationRow("org.opencontainers.image.revision", "git log -n 1 --pretty=format:%h", labels, t, r)
+		r = recommendationRow("org.opencontainers.image.source", "git config --get remote.origin.url", labels, t, r)
+		r = recommendationRow("org.opencontainers.image.url", "git config --get remote.origin.url", labels, t, r)
 
 		if writeSeparators {
 			t.AppendSeparator()
@@ -124,5 +105,20 @@ func (c *CheckCmd) Run() error {
 		c.Log.Println(sb.String())
 	}
 
+	if c.FailOnRecommendation && r {
+		os.Exit(1)
+	}
+
 	return nil
+}
+
+func recommendationRow(name string, recommendation string, labels map[string]string, t table.Writer, recommendations bool) bool {
+	created := labels[name]
+	if created == "" {
+		t.AppendRow(table.Row{name, "Missing", recommendation})
+		recommendations = true
+	} else {
+		t.AppendRow(table.Row{name, "OK", ""})
+	}
+	return recommendations
 }

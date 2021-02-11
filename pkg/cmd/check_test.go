@@ -14,13 +14,13 @@ import (
 
 func TestCheck(t *testing.T) {
 	tests := []struct {
-		image string
-		blobResponse         string
+		image          string
+		blobResponse   string
 		expectedOutput string
 	}{
 		{
-			image: "jenkinscinfra/terraform",
-			blobResponse:        "blobs.1.0.0.json",
+			image:        "jenkinscinfra/terraform",
+			blobResponse: "blobs.1.0.0.json",
 			expectedOutput: `+-----------------------------------+----+----------------+
 | LABEL                             | OK | RECOMMENDATION |
 +-----------------------------------+----+----------------+
@@ -32,8 +32,8 @@ func TestCheck(t *testing.T) {
 `,
 		},
 		{
-			image: "jenkinscinfra/terraform",
-			blobResponse:        "blobs.no-labels.json",
+			image:        "jenkinscinfra/terraform",
+			blobResponse: "blobs.no-labels.json",
 			expectedOutput: `+-----------------------------------+---------+------------------------------------+
 | LABEL                             | OK      | RECOMMENDATION                     |
 +-----------------------------------+---------+------------------------------------+
