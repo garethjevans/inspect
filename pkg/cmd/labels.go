@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// LabelsCmd struct for the labels command.
 type LabelsCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
@@ -16,6 +17,7 @@ type LabelsCmd struct {
 	Log  Logs
 }
 
+// NewLabelsCmd struct for the labels command.
 func NewLabelsCmd() *cobra.Command {
 	c := &LabelsCmd{
 		BaseCmd: BaseCmd{
@@ -45,6 +47,7 @@ func NewLabelsCmd() *cobra.Command {
 	return cmd
 }
 
+// Run runs the command.
 func (c *LabelsCmd) Run() error {
 	commands := []string{}
 
@@ -91,6 +94,7 @@ func (c *LabelsCmd) Run() error {
 	return nil
 }
 
+// Println a helper to allow this to be mocked out.
 func (c *LabelsCmd) Println(message string) {
 	fmt.Println(message)
 }

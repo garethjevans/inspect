@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ImageCmd struct for the image command.
 type ImageCmd struct {
 	Cmd  *cobra.Command
 	Args []string
@@ -19,6 +20,7 @@ type ImageCmd struct {
 	Tag        string
 }
 
+// NewImageCmd creates a new ImageCmd.
 func NewImageCmd() *cobra.Command {
 	c := &ImageCmd{}
 	cmd := &cobra.Command{
@@ -46,6 +48,7 @@ func NewImageCmd() *cobra.Command {
 	return cmd
 }
 
+// Run runs the command.
 func (c *ImageCmd) Run() error {
 	client := inspect.Client{
 		Client: &http.Client{},
