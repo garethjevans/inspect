@@ -3,14 +3,7 @@
 Inspect the docker container
 
 ```
-inspect image <name> [flags]
-```
-
-### Options
-
-```
-  -r, --repository string   Repository to query
-  -t, --tag string          Tag to query
+inspect image <name>... [flags]
 ```
 
 ### Options inherited from parent commands
