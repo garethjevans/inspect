@@ -6,6 +6,12 @@ Check the docker container for recommended labels
 inspect check <name>... [flags]
 ```
 
+### Options
+
+```
+  -f, --fail-on-recommendations   Should exit 1 if there are recommendations
+```
+
 ### Options inherited from parent commands
 
 ```
