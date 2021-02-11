@@ -11,8 +11,9 @@ inspect image <name>... [flags]
 ```
   -v, --debug        Debug Output
       --help         Show help for command
+  -m, --markdown     Display all tables in Markdown format
       --no-headers   Do not display table headers
-      --raw          Display all tables in raw format
+  -r, --raw          Display all tables in raw format
 ```
 
 ### SEE ALSO
