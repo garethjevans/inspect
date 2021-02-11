@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// BuildArgsCmd struct for the build args command.
 type BuildArgsCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
@@ -16,6 +17,7 @@ type BuildArgsCmd struct {
 	Log  Logs
 }
 
+// NewBuildArgsCmd creates a new build args command.
 func NewBuildArgsCmd() *cobra.Command {
 	c := &BuildArgsCmd{
 		BaseCmd: BaseCmd{
@@ -45,6 +47,7 @@ func NewBuildArgsCmd() *cobra.Command {
 	return cmd
 }
 
+// BuildArgsCmd runs the command.
 func (c *BuildArgsCmd) Run() error {
 	commands := []string{}
 
@@ -88,6 +91,7 @@ func (c *BuildArgsCmd) Run() error {
 	return nil
 }
 
+// Println a helper to allow this to be mocked out.
 func (c *BuildArgsCmd) Println(message string) {
 	fmt.Println(message)
 }

@@ -18,12 +18,21 @@ var (
 )
 
 type DiffCmd struct {
-	Cmd  *cobra.Command
-	Args []string
+	Cmd    *cobra.Command
+	Args   []string
+	Log    Logs
+	Client inspect.Client
 }
 
 func NewDiffCmd() *cobra.Command {
-	c := &DiffCmd{}
+	c := &DiffCmd{
+		Client: inspect.Client{
+			Client: &http.Client{},
+		},
+	}
+
+	c.Log = c
+
 	cmd := &cobra.Command{
 		Use:     "diff <image> <image>",
 		Short:   "Diff two docker images",
@@ -45,10 +54,6 @@ func NewDiffCmd() *cobra.Command {
 }
 
 func (c *DiffCmd) Run() error {
-	client := inspect.Client{
-		Client: &http.Client{},
-	}
-
 	image1 := c.Args[0]
 	image2 := c.Args[1]
 
@@ -60,12 +65,12 @@ func (c *DiffCmd) Run() error {
 		return fmt.Errorf("images do not appear to be from the git repo 1=%s, 2=%s", repo1, repo2)
 	}
 
-	labels1, err := client.Labels(repo1, tag1)
+	labels1, err := c.Client.Labels(repo1, tag1)
 	if err != nil {
 		return err
 	}
 
-	labels2, err := client.Labels(repo2, tag2)
+	labels2, err := c.Client.Labels(repo2, tag2)
 	if err != nil {
 		return err
 	}
@@ -109,7 +114,12 @@ func (c *DiffCmd) Run() error {
 
 	t.Render()
 
-	logrus.Infof("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2))
+	c.Log.Println(fmt.Sprintf("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2)))
 
 	return nil
+}
+
+// Println a helper to allow this to be mocked out.
+func (c *DiffCmd) Println(message string) {
+	fmt.Println(message)
 }

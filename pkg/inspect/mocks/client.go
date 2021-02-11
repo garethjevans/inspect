@@ -24,7 +24,7 @@ var (
 // Do is the mock client's `Do` func.
 func (m *MockClient) Do(req *http.Request) (*http.Response, error) {
 	if len(m.responseStubs) <= m.count {
-		return nil, fmt.Errorf("the MockClient: missing response stub for request %d", m.count)
+		return nil, fmt.Errorf("the MockClient: missing response stub for request %d, for url %s", m.count, req.URL.String())
 	}
 	resp := m.responseStubs[m.count]
 	m.count++
