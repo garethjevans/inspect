@@ -13,8 +13,9 @@ import (
 
 // ImageCmd struct for the image command.
 type ImageCmd struct {
-	Cmd  *cobra.Command
-	Args []string
+	Cmd    *cobra.Command
+	Args   []string
+	Client inspect.Client
 
 	Repository string
 	Tag        string
@@ -22,7 +23,11 @@ type ImageCmd struct {
 
 // NewImageCmd creates a new ImageCmd.
 func NewImageCmd() *cobra.Command {
-	c := &ImageCmd{}
+	c := &ImageCmd{
+		Client: inspect.Client{
+			Client: &http.Client{},
+		},
+	}
 	cmd := &cobra.Command{
 		Use:     "image <name>",
 		Short:   "Inspect the docker container",
@@ -50,10 +55,6 @@ func NewImageCmd() *cobra.Command {
 
 // Run runs the command.
 func (c *ImageCmd) Run() error {
-	client := inspect.Client{
-		Client: &http.Client{},
-	}
-
 	if len(c.Args) == 1 {
 		c.Repository, c.Tag = ParseRepo(c.Args[0])
 	}
@@ -66,7 +67,7 @@ func (c *ImageCmd) Run() error {
 		return errors.New("no tag has been configured")
 	}
 
-	labels, err := client.Labels(c.Repository, c.Tag)
+	labels, err := c.Client.Labels(c.Repository, c.Tag)
 	if err != nil {
 		return err
 	}

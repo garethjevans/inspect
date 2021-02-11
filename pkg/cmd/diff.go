@@ -18,12 +18,21 @@ var (
 )
 
 type DiffCmd struct {
-	Cmd  *cobra.Command
-	Args []string
+	Cmd    *cobra.Command
+	Args   []string
+	Log    Logs
+	Client inspect.Client
 }
 
 func NewDiffCmd() *cobra.Command {
-	c := &DiffCmd{}
+	c := &DiffCmd{
+		Client: inspect.Client{
+			Client: &http.Client{},
+		},
+	}
+
+	c.Log = c
+
 	cmd := &cobra.Command{
 		Use:     "diff <image> <image>",
 		Short:   "Diff two docker images",
@@ -96,7 +105,12 @@ func (c *DiffCmd) Run() error {
 
 	t.Render()
 
-	logrus.Infof("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2))
+	c.Log.Println(fmt.Sprintf("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2)))
 
 	return nil
+}
+
+// Println a helper to allow this to be mocked out.
+func (c *DiffCmd) Println(message string) {
+	fmt.Println(message)
 }

@@ -11,6 +11,7 @@ type BaseCmd struct {
 	CommandRunner util.CommandRunner
 }
 
+// GitCommitRev helper to return the git commit rev.
 func (b *BaseCmd) GitCommitRev() (string, error) {
 	gitCommitRevCommand := util.Command{
 		Name: "git",
@@ -25,6 +26,7 @@ func (b *BaseCmd) GitCommitRev() (string, error) {
 	return out, nil
 }
 
+// GitScmURL helper to return the git scm url.
 func (b *BaseCmd) GitScmURL() (string, error) {
 	gitScmURLCommand := util.Command{
 		Name: "git",
@@ -40,6 +42,7 @@ func (b *BaseCmd) GitScmURL() (string, error) {
 	return out, nil
 }
 
+// BuildDate helper to return the current build date.
 func (b *BaseCmd) BuildDate() (string, error) {
 	buildDate := util.Command{
 		Name: "date",
@@ -54,6 +57,7 @@ func (b *BaseCmd) BuildDate() (string, error) {
 	return out, nil
 }
 
+// GoVersion helper to return the current go version.
 func (b *BaseCmd) GoVersion() (string, error) {
 	goVersionCommand := util.Command{
 		Name: "go",
@@ -70,6 +74,7 @@ func (b *BaseCmd) GoVersion() (string, error) {
 	return goVersion, nil
 }
 
+// GitTreeState helper to return the current tree state (clean|dirty).
 func (b *BaseCmd) GitTreeState() (string, error) {
 	gitStatusCommand := util.Command{
 		Name: "git",
