@@ -70,14 +70,23 @@ func (c *ImageCmd) Run() error {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"Label", "Value"})
-	t.AppendSeparator()
+	t.SetStyle(TableStyle)
+
+	if Headers {
+		t.AppendHeader(table.Row{"Label", "Value"})
+	}
+
+	if WriteSeparators {
+		t.AppendSeparator()
+	}
 
 	for k, v := range labels {
 		t.AppendRow(table.Row{k, v})
 	}
 
-	t.AppendSeparator()
+	if WriteSeparators {
+		t.AppendSeparator()
+	}
 	t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
 
 	t.Render()
