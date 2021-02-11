@@ -1,0 +1,14 @@
+{
+  "architecture":"amd64",
+  "config":{
+    "User":"infra",
+    "Env":["PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","GOLANG_VERSION=1.15.7","GOPATH=/go","USER=infra","HOME=/home/infra"],
+    "Cmd":["/bin/bash"],
+    "WorkingDir":"/app",
+    "Labels":null,
+    "ArgsEscaped":true,
+    "OnBuild":null,
+    "Shell":["/bin/bash","-o","pipefail","-c"]
+  },
+  "created":"2021-01-27T08:35:44.865950492Z"
+}

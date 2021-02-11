@@ -69,41 +69,45 @@ func (c *ImageCmd) Run() error {
 			return err
 		}
 
-		t := table.NewWriter()
-
-		sb := strings.Builder{}
-		t.SetOutputMirror(&sb)
-		t.SetStyle(tableStyle)
-
-		if headers {
-			t.AppendHeader(table.Row{"Label", "Value"})
-		}
-
-		if writeSeparators {
-			t.AppendSeparator()
-		}
-
-		keys := AllKeys(labels)
-		sort.Strings(keys)
-
-		for _, k := range keys {
-			t.AppendRow(table.Row{k, labels[k]})
-		}
-
-		if writeSeparators {
-			t.AppendSeparator()
-		}
-
-		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
-
-		if enableMarkdown {
-			t.RenderMarkdown()
+		if len(labels) == 0 {
+			c.Log.Println("No labels found for " + a)
 		} else {
-			t.Render()
-		}
+			t := table.NewWriter()
 
-		// write the table
-		c.Log.Println(sb.String())
+			sb := strings.Builder{}
+			t.SetOutputMirror(&sb)
+			t.SetStyle(tableStyle)
+
+			if headers {
+				t.AppendHeader(table.Row{"Label", "Value"})
+			}
+
+			if writeSeparators {
+				t.AppendSeparator()
+			}
+
+			keys := AllKeys(labels)
+			sort.Strings(keys)
+
+			for _, k := range keys {
+				t.AppendRow(table.Row{k, labels[k]})
+			}
+
+			if writeSeparators {
+				t.AppendSeparator()
+			}
+
+			t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
+
+			if enableMarkdown {
+				t.RenderMarkdown()
+			} else {
+				t.Render()
+			}
+
+			// write the table
+			c.Log.Println(sb.String())
+		}
 	}
 	return nil
 }
