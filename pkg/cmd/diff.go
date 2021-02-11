@@ -72,10 +72,21 @@ func (c *DiffCmd) Run() error {
 
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"Image", "1", "2"})
-	t.AppendSeparator()
+	t.SetStyle(TableStyle)
+
+	if Headers {
+		t.AppendHeader(table.Row{"Image", "1", "2"})
+	}
+
+	if WriteSeparators {
+		t.AppendSeparator()
+	}
+
 	t.AppendRow(table.Row{repo1, tag1, tag2})
-	t.AppendSeparator()
+
+	if WriteSeparators {
+		t.AppendSeparator()
+	}
 
 	keys := AllKeys(labels1, labels2)
 
@@ -87,7 +98,9 @@ func (c *DiffCmd) Run() error {
 		}
 	}
 
-	t.AppendSeparator()
+	if WriteSeparators {
+		t.AppendSeparator()
+	}
 	t.AppendRow(table.Row{
 		"GitHub URL",
 		inspect.GitHubURL(labels1),

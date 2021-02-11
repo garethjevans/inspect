@@ -6,6 +6,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/jedib0t/go-pretty/v6/table"
+
 	"github.com/garethjevans/inspect/pkg/util"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
@@ -23,7 +25,14 @@ import (
 // Version is dynamically set by the toolchain or overridden by the Makefile.
 var Version = version.Version
 
+// Verbose enable verbose logging, set by the --debug flag.
 var Verbose bool
+
+// Raw all tables should be displayed in raw format.
+var Raw bool
+
+// NoHeaders do not write table headers.
+var NoHeaders bool
 
 // BuildDate is dynamically set at build time in the Makefile.
 var BuildDate = version.BuildDate
@@ -50,6 +59,8 @@ func init() {
 
 	RootCmd.PersistentFlags().Bool("help", false, "Show help for command")
 	RootCmd.PersistentFlags().BoolVarP(&Verbose, "debug", "v", false, "Debug Output")
+	RootCmd.PersistentFlags().BoolVarP(&Raw, "raw", "r", false, "Display all tables in raw format")
+	RootCmd.PersistentFlags().BoolVarP(&NoHeaders, "no-headers", "", false, "Do not display table headers")
 
 	RootCmd.Flags().Bool("version", false, "Show version")
 
@@ -65,9 +76,26 @@ func init() {
 	RootCmd.AddCommand(cmd.NewLabelsCmd())
 	RootCmd.AddCommand(cmd.NewDiffCmd())
 
-	RootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+	RootCmd.PersistentPreRun = func(command *cobra.Command, args []string) {
 		if Verbose {
 			logrus.SetLevel(logrus.DebugLevel)
+		}
+
+		if Raw {
+			cmd.TableStyle = table.Style {
+				Name:    "Raw",
+				Box:     table.StyleBoxDefault,
+				Color:   table.ColorOptionsDefault,
+				Format:  table.FormatOptionsDefault,
+				HTML:    table.DefaultHTMLOptions,
+				Options: table.OptionsNoBordersAndSeparators,
+				Title:   table.TitleOptionsDefault,
+			}
+			cmd.WriteSeparators = false
+		}
+
+		if NoHeaders {
+			cmd.Headers = false
 		}
 	}
 
