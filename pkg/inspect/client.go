@@ -2,7 +2,6 @@ package inspect
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -20,28 +19,46 @@ type Client struct {
 	Client HTTPClient
 }
 
-func (i *Client) token(repo string) (string, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://auth.docker.io/token?service=registry.docker.io&scope=repository:%s:pull", repo), nil)
+func (i *Client) get(url string, response interface{}, headers http.Header) error {
+	logrus.Debugf("requesting %s", url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return "", err
+		return err
+	}
+
+	if headers != nil {
+		req.Header = headers
 	}
 
 	resp, err := i.Client.Do(req)
 	if err != nil {
-		return "", err
+		return err
 	}
+
 	logrus.Debugf("got status code %d", resp.StatusCode)
 
-	tokenResponse := TokenResponse{}
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("unexpected response status %d", resp.StatusCode)
+	}
 
 	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	logrus.Debugf("body> %s", string(body))
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return err
+	}
 
-	err = json.Unmarshal(body, &tokenResponse)
+	return nil
+}
+
+func (i *Client) token(repo string) (string, error) {
+	tokenResponse := TokenResponse{}
+
+	err := i.get(fmt.Sprintf("https://auth.docker.io/token?service=registry.docker.io&scope=repository:%s:pull", repo), &tokenResponse, nil)
 	if err != nil {
 		return "", err
 	}
@@ -57,34 +74,13 @@ func (i *Client) Labels(repo string, version string) (map[string]string, error) 
 
 	var digest string
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://registry-1.docker.io/v2/%s/manifests/%s", repo, version), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
-
-	resp, err := i.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	logrus.Debugf("got status code %d", resp.StatusCode)
-
-	if resp.StatusCode != 200 {
-		return nil, errors.New("unable to find manifest " + version + ", " + resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
-	if err != nil {
-		return nil, err
-	}
-
-	logrus.Debugf("body> %s", string(body))
-
 	manifestResponse := ManifestResponse{}
-	err = json.Unmarshal(body, &manifestResponse)
+
+	headers := http.Header{}
+	headers.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	headers.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
+
+	err = i.get(fmt.Sprintf("https://registry-1.docker.io/v2/%s/manifests/%s", repo, version), &manifestResponse, headers)
 	if err != nil {
 		return nil, err
 	}
@@ -92,30 +88,12 @@ func (i *Client) Labels(repo string, version string) (map[string]string, error) 
 	logrus.Debugf("got digest %s", manifestResponse.Config.Digest)
 	digest = manifestResponse.Config.Digest
 
-	req, err = http.NewRequest("GET", fmt.Sprintf("https://registry-1.docker.io/v2/%s/blobs/%s", repo, digest), nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
-
-	resp, err = i.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	logrus.Debugf("got status code %d", resp.StatusCode)
-	if resp.StatusCode != 200 {
-		return nil, errors.New("unable to find blob " + digest + ", " + resp.Status)
-	}
-
-	body, err = ioutil.ReadAll(io.LimitReader(resp.Body, 10000000))
-	if err != nil {
-		return nil, err
-	}
-
-	logrus.Debugf("body> %s", string(body))
+	headers = http.Header{}
+	headers.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	blobResponse := BlobResponse{}
-	err = json.Unmarshal(body, &blobResponse)
+
+	err = i.get(fmt.Sprintf("https://registry-1.docker.io/v2/%s/blobs/%s", repo, digest), &blobResponse, headers)
 	if err != nil {
 		return nil, err
 	}

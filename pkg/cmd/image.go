@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -13,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type InspectCmd struct {
+type ImageCmd struct {
 	Cmd  *cobra.Command
 	Args []string
 
@@ -21,14 +19,14 @@ type InspectCmd struct {
 	Tag        string
 }
 
-func NewInspectCmd() *cobra.Command {
-	c := &InspectCmd{}
+func NewImageCmd() *cobra.Command {
+	c := &ImageCmd{}
 	cmd := &cobra.Command{
-		Use:     "inspect",
+		Use:     "image <name>",
 		Short:   "Inspect the docker container",
 		Long:    "",
 		Example: "",
-		Aliases: []string{"i", "in", "ins", "image"},
+		Aliases: []string{"i", "in", "ins"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
@@ -48,7 +46,7 @@ func NewInspectCmd() *cobra.Command {
 	return cmd
 }
 
-func (c *InspectCmd) Run() error {
+func (c *ImageCmd) Run() error {
 	client := inspect.Client{
 		Client: &http.Client{},
 	}
@@ -79,34 +77,10 @@ func (c *InspectCmd) Run() error {
 		t.AppendRow(table.Row{k, v})
 	}
 
-	gitURL := labels["org.opencontainers.image.source"]
-	if strings.HasSuffix(gitURL, ".git") {
-		gitURL = strings.TrimSuffix(gitURL, ".git")
-	}
-
-	possibleURL := fmt.Sprintf("%s/tree/%s", gitURL, labels["org.opencontainers.image.revision"])
 	t.AppendSeparator()
-	t.AppendRow(table.Row{"GitHub URL", possibleURL})
+	t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
 
 	t.Render()
 
 	return nil
-}
-
-func ParseRepo(in string) (string, string) {
-	if !strings.Contains(in, ":") {
-		return in, "latest"
-	}
-
-	// look for sha first
-	if strings.Contains(in, "@") {
-		parts := strings.SplitN(in, "@", 2)
-		return parts[0], parts[1]
-	}
-
-	parts := strings.SplitN(in, ":", 2)
-	if parts[1] == "" {
-		return parts[0], "latest"
-	}
-	return parts[0], parts[1]
 }

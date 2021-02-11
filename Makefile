@@ -60,7 +60,7 @@ deploy-local: build
 
 all: version check
 
-check: fmt build test
+check: fmt lint build test
 
 version:
 	echo "Go version: $(GO_VERSION)"
