@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ClusterCmd struct for the cluster command.
 type ClusterCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
@@ -15,6 +16,7 @@ type ClusterCmd struct {
 	Log  Logs
 }
 
+// NewClusterCmd creates a new cluster command.
 func NewClusterCmd() *cobra.Command {
 	c := &ClusterCmd{
 		BaseCmd: BaseCmd{
@@ -44,6 +46,7 @@ func NewClusterCmd() *cobra.Command {
 	return cmd
 }
 
+// Run runs the command.
 func (c *ClusterCmd) Run() error {
 	// connect with local kubeconfig
 
@@ -52,6 +55,7 @@ func (c *ClusterCmd) Run() error {
 	return nil
 }
 
+// Println a helper to allow this to be mocked out.
 func (c *ClusterCmd) Println(message string) {
 	fmt.Println(message)
 }
