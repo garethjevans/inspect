@@ -195,3 +195,31 @@ func TestImage_NoHeaders(t *testing.T) {
 	assert.Equal(t, 1, len(logger.Messages))
 	assert.Equal(t, expectedImageResponseNoHeaders, logger.Messages[0])
 }
+
+func TestImage_NoLabels(t *testing.T) {
+	logger := &mock.LoggerMock{}
+	mock := &mocks.MockClient{}
+
+	c := cmd.ImageCmd{
+		BaseCmd: cmd.BaseCmd{
+			Log: logger,
+		},
+		Client: inspect.Client{
+			Client: mock,
+		},
+	}
+
+	cmd.Reset()
+
+	stubWithFixture(t, mock, "token.json")
+	stubWithFixture(t, mock, "manifests.1.0.0.json")
+	stubWithFixture(t, mock, "blobs.no-labels.json")
+
+	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
+
+	err := c.Run()
+	assert.NoError(t, err)
+
+	assert.Equal(t, 1, len(logger.Messages))
+	assert.Equal(t, "No labels found for jenkinsciinfra/terraform:1.0.0", logger.Messages[0])
+}
