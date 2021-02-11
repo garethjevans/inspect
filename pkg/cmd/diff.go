@@ -54,10 +54,6 @@ func NewDiffCmd() *cobra.Command {
 }
 
 func (c *DiffCmd) Run() error {
-	client := inspect.Client{
-		Client: &http.Client{},
-	}
-
 	image1 := c.Args[0]
 	image2 := c.Args[1]
 
@@ -69,12 +65,12 @@ func (c *DiffCmd) Run() error {
 		return fmt.Errorf("images do not appear to be from the git repo 1=%s, 2=%s", repo1, repo2)
 	}
 
-	labels1, err := client.Labels(repo1, tag1)
+	labels1, err := c.Client.Labels(repo1, tag1)
 	if err != nil {
 		return err
 	}
 
-	labels2, err := client.Labels(repo2, tag2)
+	labels2, err := c.Client.Labels(repo2, tag2)
 	if err != nil {
 		return err
 	}
