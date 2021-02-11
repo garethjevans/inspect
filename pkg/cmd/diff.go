@@ -88,11 +88,15 @@ func (c *DiffCmd) Run() error {
 	}
 
 	t.AppendSeparator()
-	t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels1), inspect.GitHubURL(labels2)})
-
-	t.AppendRow(table.Row{"Compare URL", fmt.Sprintf("%s/compare/%s...%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2))})
+	t.AppendRow(table.Row{
+		"GitHub URL",
+		inspect.GitHubURL(labels1),
+		inspect.GitHubURL(labels2),
+	})
 
 	t.Render()
+
+	logrus.Infof("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2))
 
 	return nil
 }
