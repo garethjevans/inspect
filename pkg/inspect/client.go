@@ -15,6 +15,7 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
+// Client the docker client.
 type Client struct {
 	Client HTTPClient
 }
@@ -66,6 +67,7 @@ func (i *Client) token(repo string) (string, error) {
 	return tokenResponse.Token, nil
 }
 
+// Labels returns a map of labels for the specified image.
 func (i *Client) Labels(repo string, version string) (map[string]string, error) {
 	token, err := i.token(repo)
 	if err != nil {
