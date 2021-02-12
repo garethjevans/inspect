@@ -9,14 +9,17 @@ var (
 	enableMarkdown  = false
 )
 
+// EnableMarkdown tables are outputted in markdown format, rather than ASCII.
 func EnableMarkdown() {
 	enableMarkdown = true
 }
 
+// DisableHeaders disables the headers on tables.
 func DisableHeaders() {
 	headers = false
 }
 
+// Raw enables raw output on all tables.
 func Raw() {
 	writeSeparators = false
 	tableStyle = table.Style{
@@ -30,6 +33,7 @@ func Raw() {
 	}
 }
 
+// Reset resets all table formatting to the default.
 func Reset() {
 	tableStyle = table.StyleDefault
 	writeSeparators = true

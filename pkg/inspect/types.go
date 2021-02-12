@@ -10,6 +10,7 @@ type TokenResponse struct {
 	Token string `json:"token"`
 }
 
+// Config struct containing the config response.
 type Config struct {
 	MediaType string `json:"mediaType"`
 	Size      int    `json:"size"`

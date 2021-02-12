@@ -46,7 +46,7 @@ func NewBuildArgsCmd() *cobra.Command {
 	return cmd
 }
 
-// BuildArgsCmd runs the command.
+// Run runs the command.
 func (c *BuildArgsCmd) Run() error {
 	commands := []string{}
 
