@@ -13,25 +13,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	gitRevParseShortHead              = "git rev-parse --short HEAD"
+	gitConfigGetRemoteOriginURL       = "git config --get remote.origin.url"
+	dateUtc                           = "date --utc +%Y-%m-%dT%H:%M:%S"
+	goVersion                         = "go version"
+	gitStatusPorcelain                = "git status --porcelain"
+	gitConfigGetRemoteOriginURLOutput = "https://github.com/org/repo.git"
+	gitRevParseShortHeadOutput        = "sha123456"
+	dateUtcOutput                     = "2021-02-09T15:42:29"
+	goVersionOutput                   = "go version go1.15.6 darwin/amd64"
+	gitStatusPercelainOutput          = "?? ll"
+)
+
 func TestLabelsCmd(t *testing.T) {
 	logger := &mock.LoggerMock{}
 	commandRunner := &mocks.MockCommandRunner{}
 	mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
 		t.Log(c.String())
-		if c.String() == "git rev-parse --short HEAD" {
-			return "sha123456", nil
+
+		if c.String() == gitRevParseShortHead {
+			return gitRevParseShortHeadOutput, nil
 		}
-		if c.String() == "git config --get remote.origin.url" {
-			return "https://github.com/org/repo.git", nil
+		if c.String() == gitConfigGetRemoteOriginURL {
+			return gitConfigGetRemoteOriginURLOutput, nil
 		}
-		if c.String() == "date --utc +%Y-%m-%dT%H:%M:%S" {
-			return "2021-02-09T15:42:29", nil
+		if c.String() == dateUtc {
+			return dateUtcOutput, nil
 		}
-		if c.String() == "go version" {
-			return "go version go1.15.6 darwin/amd64", nil
-		}
-		if c.String() == "git status --porcelain" {
-			return "?? ll", nil
+		if c.String() == gitStatusPorcelain {
+			return gitStatusPercelainOutput, nil
 		}
 		return "", errors.New("unknown command")
 	}
@@ -52,6 +63,49 @@ func TestLabelsCmd(t *testing.T) {
 		" --label \"org.label-schema.url=https://github.com/org/repo.git\""+
 		" --label \"org.opencontainers.image.created=2021-02-09T15:42:29\""+
 		" --label \"org.label-schema.build-date=2021-02-09T15:42:29\""+
-		" --label \"io.jenkins-infra.go.version=1.15.6\""+
-		" --label \"io.jenkins-infra.tree.state=dirty\"", logger.Messages[0])
+		" --label \"inspect.tree.state=dirty\"", logger.Messages[0])
+}
+
+func TestLabelsCmd_WithGoVersion(t *testing.T) {
+	logger := &mock.LoggerMock{}
+	commandRunner := &mocks.MockCommandRunner{}
+	mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
+		t.Log(c.String())
+		if c.String() == gitRevParseShortHead {
+			return gitRevParseShortHeadOutput, nil
+		}
+		if c.String() == gitConfigGetRemoteOriginURL {
+			return gitConfigGetRemoteOriginURLOutput, nil
+		}
+		if c.String() == dateUtc {
+			return dateUtcOutput, nil
+		}
+		if c.String() == goVersion {
+			return goVersionOutput, nil
+		}
+		if c.String() == gitStatusPorcelain {
+			return gitStatusPercelainOutput, nil
+		}
+		return "", errors.New("unknown command")
+	}
+
+	c := cmd.LabelsCmd{
+		BaseCmd: cmd.BaseCmd{
+			Log:           logger,
+			CommandRunner: commandRunner,
+		},
+		IncludeGoVersion: true,
+	}
+
+	err := c.Run()
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(logger.Messages))
+	assert.Equal(t, "--label \"org.opencontainers.image.revision=sha123456\""+
+		" --label \"org.label-schema.vcs-ref=sha123456\""+
+		" --label \"org.opencontainers.image.url=https://github.com/org/repo.git\""+
+		" --label \"org.label-schema.url=https://github.com/org/repo.git\""+
+		" --label \"org.opencontainers.image.created=2021-02-09T15:42:29\""+
+		" --label \"org.label-schema.build-date=2021-02-09T15:42:29\""+
+		" --label \"inspect.tools.go.version=1.15.6\""+
+		" --label \"inspect.tree.state=dirty\"", logger.Messages[0])
 }
