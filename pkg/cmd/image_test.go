@@ -16,6 +16,7 @@ var (
 	expectedImageResponse = `+------------------------------------------+----------------------------------------------------------------+
 | LABEL                                    | VALUE                                                          |
 +------------------------------------------+----------------------------------------------------------------+
+| inspect.tree.state                       | clean                                                          |
 | io.jenkins-infra.tools                   | golang,terraform                                               |
 | io.jenkins-infra.tools.golang.version    | 1.15                                                           |
 | io.jenkins-infra.tools.terraform.version | 0.13.6                                                         |
@@ -33,6 +34,7 @@ var (
 `
 
 	expectedImageResponseRaw = ` LABEL                                     VALUE                                                          
+ inspect.tree.state                        clean                                                          
  io.jenkins-infra.tools                    golang,terraform                                               
  io.jenkins-infra.tools.golang.version     1.15                                                           
  io.jenkins-infra.tools.terraform.version  0.13.6                                                         
@@ -49,6 +51,7 @@ var (
 
 	expectedImageResponseMarkdown = `| Label | Value |
 | --- | --- |
+| inspect.tree.state | clean |
 | io.jenkins-infra.tools | golang,terraform |
 | io.jenkins-infra.tools.golang.version | 1.15 |
 | io.jenkins-infra.tools.terraform.version | 0.13.6 |
@@ -64,6 +67,7 @@ var (
 `
 
 	expectedImageResponseNoHeaders = `+------------------------------------------+----------------------------------------------------------------+
+| inspect.tree.state                       | clean                                                          |
 | io.jenkins-infra.tools                   | golang,terraform                                               |
 | io.jenkins-infra.tools.golang.version    | 1.15                                                           |
 | io.jenkins-infra.tools.terraform.version | 0.13.6                                                         |

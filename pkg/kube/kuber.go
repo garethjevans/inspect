@@ -17,6 +17,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+// Kuber type to interact with k8s.
 type Kuber struct {
 }
 
@@ -40,6 +41,7 @@ func (k *Kuber) loadClientConfig() (*rest.Config, error) {
 	return restConfig, nil
 }
 
+// GetImagesForNamespace lists all images within a namespace.
 func (k *Kuber) GetImagesForNamespace(namespace string) ([]string, error) {
 	config, err := k.loadClientConfig()
 	if err != nil {

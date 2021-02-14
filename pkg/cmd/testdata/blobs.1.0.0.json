@@ -16,7 +16,8 @@
       "org.opencontainers.image.created":"2021-01-27T08:34:20Z",
       "org.opencontainers.image.revision":"ad902ec",
       "org.opencontainers.image.source":"https://github.com/jenkins-infra/docker-terraform.git",
-      "org.opencontainers.image.url":"https://github.com/jenkins-infra/docker-terraform.git"
+      "org.opencontainers.image.url":"https://github.com/jenkins-infra/docker-terraform.git",
+      "inspect.tree.state":"clean"
     },
     "ArgsEscaped":true,
     "OnBuild":null,
