@@ -89,4 +89,4 @@ https://github.com/jenkins-infra/docker-terraform/compare/ad902ec..441c261
 
 ## Documentation
 
-More indepth documentaion can be found [here](./docs/)
+More indepth documentaion can be found [here](./docs/inspect.md)
