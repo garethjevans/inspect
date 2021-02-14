@@ -18,7 +18,7 @@ type BaseCmd struct {
 func (b *BaseCmd) GitCommitRev() (string, error) {
 	gitCommitRevCommand := util.Command{
 		Name: "git",
-		Args: []string{"log", "-n", "1", "--pretty=format:%h"},
+		Args: []string{"rev-parse", "--short", "HEAD"},
 	}
 
 	out, err := b.CommandRunner.RunWithoutRetry(&gitCommitRevCommand)

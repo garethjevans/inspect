@@ -18,7 +18,7 @@ func TestLabelsCmd(t *testing.T) {
 	commandRunner := &mocks.MockCommandRunner{}
 	mocks.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
 		t.Log(c.String())
-		if c.String() == "git log -n 1 --pretty=format:%h" {
+		if c.String() == "git rev-parse --short HEAD" {
 			return "sha123456", nil
 		}
 		if c.String() == "git config --get remote.origin.url" {
