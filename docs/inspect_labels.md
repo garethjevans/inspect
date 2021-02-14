@@ -6,6 +6,12 @@ Generates labels when creating an image
 inspect labels [flags]
 ```
 
+### Examples
+
+```
+docker build $(inspect labels) ...
+```
+
 ### Options
 
 ```

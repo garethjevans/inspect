@@ -31,7 +31,7 @@ func NewBuildArgsCmd() *cobra.Command {
 		Use:     "build-args",
 		Short:   "Generates build args when creating an image",
 		Long:    "",
-		Example: "",
+		Example: "docker build $(inspect build-args) ...",
 		Aliases: []string{"args"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd

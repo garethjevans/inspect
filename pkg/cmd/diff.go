@@ -40,8 +40,8 @@ func NewDiffCmd() *cobra.Command {
 		Use:     "diff <image> <image>",
 		Short:   "Diff two docker images",
 		Long:    "",
-		Example: "",
-		//Aliases: []string{"i", "in", "ins"},
+		Example: "inspect diff jenkinciinfra/terraform:1.0.0 jenkinsciinfra/terraform:1.1.0",
+		Aliases: []string{"compare"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args

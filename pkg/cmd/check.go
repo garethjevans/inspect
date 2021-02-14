@@ -30,10 +30,10 @@ func NewCheckCmd() *cobra.Command {
 	}
 	c.Log = c
 	cmd := &cobra.Command{
-		Use:     "check <name>...",
-		Short:   "Check the docker container for recommended labels",
-		Long:    "",
-		Example: "",
+		Use:     "check <image>...",
+		Short:   "Check the image for recommended labels",
+		Long:    "Check the images for recommended labels, provides a tabular output with recommendations if a particular label does not exist.",
+		Example: "inspect check alpine:3.13.0",
 		Aliases: []string{"validate"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
