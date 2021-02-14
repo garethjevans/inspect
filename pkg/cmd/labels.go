@@ -32,7 +32,7 @@ func NewLabelsCmd() *cobra.Command {
 		Use:     "labels",
 		Short:   "Generates labels when creating an image",
 		Long:    "",
-		Example: "",
+		Example: "docker build $(inspect labels) ...",
 		Aliases: []string{"args"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
