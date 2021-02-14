@@ -1,9 +1,19 @@
 ## inspect check
 
-Check the docker container for recommended labels
+Check the image for recommended labels
+
+### Synopsis
+
+Check the images for recommended labels, provides a tabular output with recommendations if a particular label does not exist.
 
 ```
-inspect check <name>... [flags]
+inspect check <image>... [flags]
+```
+
+### Examples
+
+```
+inspect check alpine:3.13.0
 ```
 
 ### Options

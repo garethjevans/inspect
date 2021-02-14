@@ -6,6 +6,12 @@ Generates build args when creating an image
 inspect build-args [flags]
 ```
 
+### Examples
+
+```
+docker build $(inspect build-args) ...
+```
+
 ### Options
 
 ```

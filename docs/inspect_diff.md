@@ -6,6 +6,12 @@ Diff two docker images
 inspect diff <image> <image> [flags]
 ```
 
+### Examples
+
+```
+inspect diff jenkinciinfra/terraform:1.0.0 jenkinsciinfra/terraform:1.1.0
+```
+
 ### Options inherited from parent commands
 
 ```
