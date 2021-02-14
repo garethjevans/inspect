@@ -55,7 +55,7 @@ type BlobDetail struct {
 
 // SourceURL Gets the SourceURL for the revision.
 func SourceURL(labels map[string]string) string {
-	return labels["org.opencontainers.image.source"]
+	return first(labels, "org.opencontainers.image.url", "org.label-schema.url")
 }
 
 // GitHubURL Gets the GitHubUrl for the revision.
@@ -74,5 +74,15 @@ func BaseURL(labels map[string]string) string {
 
 // Revision get the commit revision for this image.
 func Revision(labels map[string]string) string {
-	return labels["org.opencontainers.image.revision"]
+	return first(labels, "org.opencontainers.image.revision", "org.label-schema.vcs-ref")
+}
+
+func first(labels map[string]string, names ...string) string {
+	for _, n := range names {
+		r := labels[n]
+		if r != "" {
+			return r
+		}
+	}
+	return ""
 }
