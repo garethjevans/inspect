@@ -36,26 +36,3 @@ func validate(repository string, tag string) (string, string, error) {
 	}
 	return repository, tag, nil
 }
-
-// AllKeys returns a list of all unique keys from all maps.
-func AllKeys(maps ...map[string]string) []string {
-	keys := []string{}
-	for _, m := range maps {
-		for k := range m {
-			if !Contains(keys, k) {
-				keys = append(keys, k)
-			}
-		}
-	}
-	return keys
-}
-
-// Contains returns true if the string is contained within this list.
-func Contains(in []string, val string) (ret bool) {
-	for _, i := range in {
-		if i == val {
-			ret = true
-		}
-	}
-	return
-}
