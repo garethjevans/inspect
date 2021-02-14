@@ -87,9 +87,13 @@ func (c *CheckCmd) Run() error {
 		}
 
 		r = recommendationRow("org.opencontainers.image.created", "date --utc +%Y-%m-%dT%H:%M:%S", labels, t, r)
-		r = recommendationRow("org.opencontainers.image.revision", "git log -n 1 --pretty=format:%h", labels, t, r)
+		r = recommendationRow("org.opencontainers.image.revision", "git rev-parse --short HEAD", labels, t, r)
 		r = recommendationRow("org.opencontainers.image.source", "git config --get remote.origin.url", labels, t, r)
 		r = recommendationRow("org.opencontainers.image.url", "git config --get remote.origin.url", labels, t, r)
+		r = recommendationRow("org.label-schema.build-date", "date --utc +%Y-%m-%dT%H:%M:%S", labels, t, r)
+		r = recommendationRow("org.label-schema.vcs-ref", "git rev-parse --short HEAD", labels, t, r)
+		r = recommendationRow("org.label-schema.vcs-url", "git config --get remote.origin.url", labels, t, r)
+		r = recommendationRow("org.label-schema.url", "git config --get remote.origin.url", labels, t, r)
 
 		if writeSeparators {
 			t.AppendSeparator()
