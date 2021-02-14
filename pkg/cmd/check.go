@@ -94,6 +94,7 @@ func (c *CheckCmd) Run() error {
 		r = recommendationRow("org.label-schema.vcs-ref", "git rev-parse --short HEAD", labels, t, r)
 		r = recommendationRow("org.label-schema.vcs-url", "git config --get remote.origin.url", labels, t, r)
 		r = recommendationRow("org.label-schema.url", "git config --get remote.origin.url", labels, t, r)
+		r = recommendationRow("inspect.tree.state", "test -z \"$(git status --porcelain)\" && echo \"clean\" || echo \"dirty\"", labels, t, r)
 
 		if writeSeparators {
 			t.AppendSeparator()

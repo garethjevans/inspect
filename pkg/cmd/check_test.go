@@ -32,24 +32,26 @@ func TestCheck(t *testing.T) {
 | org.label-schema.vcs-ref          | OK |                |
 | org.label-schema.vcs-url          | OK |                |
 | org.label-schema.url              | OK |                |
+| inspect.tree.state                | OK |                |
 +-----------------------------------+----+----------------+
 `,
 		},
 		{
 			image:        "jenkinscinfra/terraform",
 			blobResponse: "blobs.no-labels.json",
-			expectedOutput: `+-----------------------------------+---------+------------------------------------+
-| LABEL                             | OK      | RECOMMENDATION                     |
-+-----------------------------------+---------+------------------------------------+
-| org.opencontainers.image.created  | Missing | date --utc +%Y-%m-%dT%H:%M:%S      |
-| org.opencontainers.image.revision | Missing | git rev-parse --short HEAD         |
-| org.opencontainers.image.source   | Missing | git config --get remote.origin.url |
-| org.opencontainers.image.url      | Missing | git config --get remote.origin.url |
-| org.label-schema.build-date       | Missing | date --utc +%Y-%m-%dT%H:%M:%S      |
-| org.label-schema.vcs-ref          | Missing | git rev-parse --short HEAD         |
-| org.label-schema.vcs-url          | Missing | git config --get remote.origin.url |
-| org.label-schema.url              | Missing | git config --get remote.origin.url |
-+-----------------------------------+---------+------------------------------------+
+			expectedOutput: `+-----------------------------------+---------+---------------------------------------------------------------------+
+| LABEL                             | OK      | RECOMMENDATION                                                      |
++-----------------------------------+---------+---------------------------------------------------------------------+
+| org.opencontainers.image.created  | Missing | date --utc +%Y-%m-%dT%H:%M:%S                                       |
+| org.opencontainers.image.revision | Missing | git rev-parse --short HEAD                                          |
+| org.opencontainers.image.source   | Missing | git config --get remote.origin.url                                  |
+| org.opencontainers.image.url      | Missing | git config --get remote.origin.url                                  |
+| org.label-schema.build-date       | Missing | date --utc +%Y-%m-%dT%H:%M:%S                                       |
+| org.label-schema.vcs-ref          | Missing | git rev-parse --short HEAD                                          |
+| org.label-schema.vcs-url          | Missing | git config --get remote.origin.url                                  |
+| org.label-schema.url              | Missing | git config --get remote.origin.url                                  |
+| inspect.tree.state                | Missing | test -z "$(git status --porcelain)" && echo "clean" || echo "dirty" |
++-----------------------------------+---------+---------------------------------------------------------------------+
 `,
 		},
 	}

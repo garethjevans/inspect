@@ -21,6 +21,7 @@ var (
 +------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
 | jenkinsciinfra/terraform                 | 1.0.0                                                          | 1.1.0                                                          |
 +------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
+| inspect.tree.state                       | clean                                                          | clean                                                          |
 | io.jenkins-infra.tools                   | golang,terraform                                               | golang,terraform                                               |
 | io.jenkins-infra.tools.golang.version    | 1.15                                                           | 1.15                                                           |
 | io.jenkins-infra.tools.terraform.version | 0.13.6                                                         | 0.13.6                                                         |
@@ -40,6 +41,7 @@ var (
 	expectedDiffResponseMarkdown = `| Image | 1 | 2 |
 | --- | --- | --- |
 | jenkinsciinfra/terraform | 1.0.0 | 1.1.0 |
+| inspect.tree.state | clean | clean |
 | io.jenkins-infra.tools | golang,terraform | golang,terraform |
 | io.jenkins-infra.tools.golang.version | 1.15 | 1.15 |
 | io.jenkins-infra.tools.terraform.version | 0.13.6 | 0.13.6 |
