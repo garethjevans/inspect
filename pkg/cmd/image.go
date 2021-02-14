@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/garethjevans/inspect/pkg/util"
+
 	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/sirupsen/logrus"
@@ -86,7 +88,7 @@ func (c *ImageCmd) Run() error {
 				t.AppendSeparator()
 			}
 
-			keys := AllKeys(labels)
+			keys := util.AllKeys(labels)
 			sort.Strings(keys)
 
 			for _, k := range keys {

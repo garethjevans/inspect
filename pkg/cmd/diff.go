@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/garethjevans/inspect/pkg/util"
+
 	"github.com/fatih/color"
 
 	"github.com/garethjevans/inspect/pkg/inspect"
@@ -105,7 +107,7 @@ func (c *DiffCmd) Run() error {
 		t.AppendSeparator()
 	}
 
-	keys := AllKeys(labels1, labels2)
+	keys := util.AllKeys(labels1, labels2)
 	sort.Strings(keys)
 
 	for _, k := range keys {
