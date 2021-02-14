@@ -12,8 +12,9 @@ import (
 // BuildArgsCmd struct for the build args command.
 type BuildArgsCmd struct {
 	BaseCmd
-	Cmd  *cobra.Command
-	Args []string
+	Cmd              *cobra.Command
+	Args             []string
+	IncludeGoVersion bool
 }
 
 // NewBuildArgsCmd creates a new build args command.
@@ -43,6 +44,8 @@ func NewBuildArgsCmd() *cobra.Command {
 		Args: cobra.NoArgs,
 	}
 
+	cmd.Flags().BoolVarP(&c.IncludeGoVersion, "include-go-version", "", false, "Attempt to include `go version` in the build arg set")
+
 	return cmd
 }
 
@@ -71,12 +74,14 @@ func (c *BuildArgsCmd) Run() error {
 
 	commands = append(commands, fmt.Sprintf("\"BUILD_DATE=%s\"", buildDate))
 
-	goVersion, err := c.GoVersion()
-	if err != nil {
-		return err
-	}
+	if c.IncludeGoVersion {
+		goVersion, err := c.GoVersion()
+		if err != nil {
+			return err
+		}
 
-	commands = append(commands, fmt.Sprintf("\"GO_VERSION=%s\"", goVersion))
+		commands = append(commands, fmt.Sprintf("\"GO_VERSION=%s\"", goVersion))
+	}
 
 	gitTreeState, err := c.GitTreeState()
 	if err != nil {

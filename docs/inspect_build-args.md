@@ -6,6 +6,12 @@ Generates build args when creating an image
 inspect build-args [flags]
 ```
 
+### Options
+
+```
+      --include-go-version go version   Attempt to include go version in the build arg set
+```
+
 ### Options inherited from parent commands
 
 ```

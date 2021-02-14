@@ -6,6 +6,12 @@ Generates labels when creating an image
 inspect labels [flags]
 ```
 
+### Options
+
+```
+      --include-go-version go version   Attempt to include go version in the label set
+```
+
 ### Options inherited from parent commands
 
 ```

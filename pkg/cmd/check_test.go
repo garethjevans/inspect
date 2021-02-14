@@ -28,6 +28,10 @@ func TestCheck(t *testing.T) {
 | org.opencontainers.image.revision | OK |                |
 | org.opencontainers.image.source   | OK |                |
 | org.opencontainers.image.url      | OK |                |
+| org.label-schema.build-date       | OK |                |
+| org.label-schema.vcs-ref          | OK |                |
+| org.label-schema.vcs-url          | OK |                |
+| org.label-schema.url              | OK |                |
 +-----------------------------------+----+----------------+
 `,
 		},
@@ -38,9 +42,13 @@ func TestCheck(t *testing.T) {
 | LABEL                             | OK      | RECOMMENDATION                     |
 +-----------------------------------+---------+------------------------------------+
 | org.opencontainers.image.created  | Missing | date --utc +%Y-%m-%dT%H:%M:%S      |
-| org.opencontainers.image.revision | Missing | git log -n 1 --pretty=format:%h    |
+| org.opencontainers.image.revision | Missing | git rev-parse --short HEAD         |
 | org.opencontainers.image.source   | Missing | git config --get remote.origin.url |
 | org.opencontainers.image.url      | Missing | git config --get remote.origin.url |
+| org.label-schema.build-date       | Missing | date --utc +%Y-%m-%dT%H:%M:%S      |
+| org.label-schema.vcs-ref          | Missing | git rev-parse --short HEAD         |
+| org.label-schema.vcs-url          | Missing | git config --get remote.origin.url |
+| org.label-schema.url              | Missing | git config --get remote.origin.url |
 +-----------------------------------+---------+------------------------------------+
 `,
 		},

@@ -14,6 +14,8 @@ type LabelsCmd struct {
 	BaseCmd
 	Cmd  *cobra.Command
 	Args []string
+
+	IncludeGoVersion bool
 }
 
 // NewLabelsCmd struct for the labels command.
@@ -42,6 +44,8 @@ func NewLabelsCmd() *cobra.Command {
 		},
 		Args: cobra.NoArgs,
 	}
+
+	cmd.Flags().BoolVarP(&c.IncludeGoVersion, "include-go-version", "", false, "Attempt to include `go version` in the label set")
 
 	return cmd
 }
@@ -74,19 +78,20 @@ func (c *LabelsCmd) Run() error {
 	commands = append(commands, fmt.Sprintf("\"org.opencontainers.image.created=%s\"", buildDate))
 	commands = append(commands, fmt.Sprintf("\"org.label-schema.build-date=%s\"", buildDate))
 
-	goVersion, err := c.GoVersion()
-	if err != nil {
-		return err
+	if c.IncludeGoVersion {
+		goVersion, err := c.GoVersion()
+		if err != nil {
+			return err
+		}
+		commands = append(commands, fmt.Sprintf("\"inspect.tools.go.version=%s\"", goVersion))
 	}
-
-	commands = append(commands, fmt.Sprintf("\"io.jenkins-infra.go.version=%s\"", goVersion))
 
 	gitTreeState, err := c.GitTreeState()
 	if err != nil {
 		return err
 	}
 
-	commands = append(commands, fmt.Sprintf("\"io.jenkins-infra.tree.state=%s\"", gitTreeState))
+	commands = append(commands, fmt.Sprintf("\"inspect.tree.state=%s\"", gitTreeState))
 
 	c.Log.Println("--label " + strings.Join(commands, " --label "))
 
