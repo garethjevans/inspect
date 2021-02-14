@@ -17,10 +17,10 @@ import (
 // ClusterCmd struct for the cluster command.
 type ClusterCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
-	Kuber  kube.Kuber
-	Client inspect.Client
+	Cmd         *cobra.Command
+	Args        []string
+	ImageLister kube.ImageLister
+	Client      inspect.Client
 
 	Namespace string
 }
@@ -34,7 +34,7 @@ func NewClusterCmd() *cobra.Command {
 		Client: inspect.Client{
 			Client: &http.Client{},
 		},
-		Kuber: kube.Kuber{},
+		ImageLister: &kube.Kuber{},
 	}
 
 	c.Log = c
@@ -63,7 +63,7 @@ func NewClusterCmd() *cobra.Command {
 
 // Run runs the command.
 func (c *ClusterCmd) Run() error {
-	images, err := c.Kuber.GetImagesForNamespace(c.Namespace)
+	images, err := c.ImageLister.GetImagesForNamespace(c.Namespace)
 	if err != nil {
 		return err
 	}
@@ -100,6 +100,8 @@ func (c *ClusterCmd) Run() error {
 			if headers {
 				t.AppendHeader(table.Row{"Label", "Value"})
 			}
+
+			t.AppendRow(table.Row{repo, tag})
 
 			if writeSeparators {
 				t.AppendSeparator()
