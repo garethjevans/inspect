@@ -12,7 +12,14 @@ func SourceURL(labels map[string]string) string {
 
 // GitHubURL Gets the GitHubUrl for the revision.
 func GitHubURL(labels map[string]string) string {
-	return fmt.Sprintf("%s/tree/%s", BaseURL(labels), Revision(labels))
+	rev := Revision(labels)
+	base := BaseURL(labels)
+
+	if rev != "" && strings.HasPrefix(base, "https://github.com/") {
+		return fmt.Sprintf("%s/tree/%s", base, rev)
+	}
+
+	return ""
 }
 
 // BaseURL Gets the base source url without the .git suffix.

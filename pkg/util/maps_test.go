@@ -1,6 +1,7 @@
 package util_test
 
 import (
+	"sort"
 	"testing"
 
 	"github.com/garethjevans/inspect/pkg/util"
@@ -17,5 +18,9 @@ func TestAllKeys(t *testing.T) {
 	map2["key3"] = "value3"
 
 	allkeys := util.AllKeys(map1, map2)
+
+	// sort this before asserting
+	sort.Strings(allkeys)
+
 	assert.Equal(t, allkeys, []string{"key1", "key2", "key3"})
 }

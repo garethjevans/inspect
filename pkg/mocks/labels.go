@@ -16,7 +16,7 @@ type MockLabelLister struct {
 
 func (m *MockLabelLister) StubResponse(t *testing.T, repo string, tag string, file string) {
 	if m.Requests == nil {
-		m.Requests = map[string]string{}
+		m.Requests = make(map[string]string)
 	}
 	key := fmt.Sprintf("%s-%s", repo, tag)
 	t.Logf("stubbing response for key '%s' with %s", key, file)
