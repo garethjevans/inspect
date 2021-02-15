@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"net/http"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/garethjevans/inspect/pkg/util"
 
@@ -23,17 +24,15 @@ var (
 // DiffCmd a struct for the diff command.
 type DiffCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
-	Client inspect.Client
+	Cmd         *cobra.Command
+	Args        []string
+	LabelLister registry.LabelLister
 }
 
 // NewDiffCmd creates a new diff command.
 func NewDiffCmd() *cobra.Command {
 	c := &DiffCmd{
-		Client: inspect.Client{
-			Client: &http.Client{},
-		},
+		LabelLister: &registry.DefaultLabelLister{},
 	}
 
 	c.Log = c
@@ -64,26 +63,19 @@ func (c *DiffCmd) Run() error {
 	image2 := c.Args[1]
 
 	logrus.Debugf("comparing %s and %s", image1, image2)
-	repo1, tag1, err := ParseRepo(image1)
-	if err != nil {
-		return err
-	}
-
-	repo2, tag2, err := ParseRepo(image2)
-	if err != nil {
-		return err
-	}
+	repo1, tag1 := ParseRepo(image1)
+	repo2, tag2 := ParseRepo(image2)
 
 	if repo1 != repo2 {
 		return fmt.Errorf("images do not appear to be from the git repo 1=%s, 2=%s", repo1, repo2)
 	}
 
-	labels1, err := c.Client.Labels(repo1, tag1)
+	labels1, err := c.LabelLister.Labels(repo1, tag1)
 	if err != nil {
 		return err
 	}
 
-	labels2, err := c.Client.Labels(repo2, tag2)
+	labels2, err := c.LabelLister.Labels(repo2, tag2)
 	if err != nil {
 		return err
 	}

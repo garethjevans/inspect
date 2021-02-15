@@ -9,10 +9,9 @@ import (
 
 func TestCanParseArgs(t *testing.T) {
 	tests := []struct {
-		input         string
-		expectedRepo  string
-		expectedTag   string
-		expectedError bool
+		input        string
+		expectedRepo string
+		expectedTag  string
 	}{
 		{
 			input:        "jenkins/jenkins:jdk11-hotspot-windowsservercore-2019",
@@ -36,37 +35,35 @@ func TestCanParseArgs(t *testing.T) {
 		},
 		{
 			input:        "alpine:3.13.0",
-			expectedRepo: "library/alpine",
+			expectedRepo: "alpine",
 			expectedTag:  "3.13.0",
 		},
 		{
 			input:        "alpine",
-			expectedRepo: "library/alpine",
+			expectedRepo: "alpine",
 			expectedTag:  "latest",
 		},
 		{
-			input:         "gcr.io/random/image:1",
-			expectedError: true,
+			input:        "gcr.io/random/image:1",
+			expectedRepo: "gcr.io/random/image",
+			expectedTag:  "1",
 		},
 		{
-			input:         "quay.io/random/image:1",
-			expectedError: true,
+			input:        "quay.io/random/image:1",
+			expectedRepo: "quay.io/random/image",
+			expectedTag:  "1",
 		},
 		{
-			input:         "other.io/random/image:1",
-			expectedError: true,
+			input:        "other.io/random/image:1",
+			expectedRepo: "other.io/random/image",
+			expectedTag:  "1",
 		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.input, func(t *testing.T) {
-			repo, tag, err := cmd.ParseRepo(tc.input)
-			if tc.expectedError {
-				assert.Error(t, err)
-			} else {
-				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedRepo, repo)
-				assert.Equal(t, tc.expectedTag, tag)
-			}
+			repo, tag := cmd.ParseRepo(tc.input)
+			assert.Equal(t, tc.expectedRepo, repo)
+			assert.Equal(t, tc.expectedTag, tag)
 		})
 	}
 }

@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"net/http"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/garethjevans/inspect/pkg/util"
 
@@ -17,17 +18,15 @@ import (
 // ImageCmd struct for the image command.
 type ImageCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
-	Client inspect.Client
+	Cmd         *cobra.Command
+	Args        []string
+	LabelLister registry.LabelLister
 }
 
 // NewImageCmd creates a new ImageCmd.
 func NewImageCmd() *cobra.Command {
 	c := &ImageCmd{
-		Client: inspect.Client{
-			Client: &http.Client{},
-		},
+		LabelLister: &registry.DefaultLabelLister{},
 	}
 	c.Log = c
 	cmd := &cobra.Command{
@@ -53,10 +52,7 @@ func NewImageCmd() *cobra.Command {
 // Run runs the command.
 func (c *ImageCmd) Run() error {
 	for _, a := range c.Args {
-		repo, tag, err := ParseRepo(a)
-		if err != nil {
-			return err
-		}
+		repo, tag := ParseRepo(a)
 
 		if repo == "" {
 			return errors.New("no repository has been configured")
@@ -66,7 +62,7 @@ func (c *ImageCmd) Run() error {
 			return errors.New("no tag has been configured")
 		}
 
-		labels, err := c.Client.Labels(repo, tag)
+		labels, err := c.LabelLister.Labels(repo, tag)
 		if err != nil {
 			return err
 		}
