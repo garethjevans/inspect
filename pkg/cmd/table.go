@@ -1,6 +1,12 @@
 package cmd
 
-import "github.com/jedib0t/go-pretty/v6/table"
+import (
+	"sort"
+
+	"github.com/garethjevans/inspect/pkg/inspect"
+	"github.com/garethjevans/inspect/pkg/util"
+	"github.com/jedib0t/go-pretty/v6/table"
+)
 
 var (
 	tableStyle      = table.StyleDefault
@@ -39,4 +45,34 @@ func Reset() {
 	writeSeparators = true
 	headers = true
 	enableMarkdown = false
+}
+
+func writeTableForImage(labels map[string]string, t table.Writer, repo string, tag string) {
+	t.SetStyle(tableStyle)
+
+	if headers {
+		t.AppendHeader(table.Row{"Label", "Value"})
+	}
+
+	t.AppendRow(table.Row{repo, tag})
+
+	if writeSeparators {
+		t.AppendSeparator()
+	}
+
+	keys := util.AllKeys(labels)
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		t.AppendRow(table.Row{k, labels[k]})
+	}
+
+	if writeSeparators {
+		t.AppendSeparator()
+	}
+
+	url := inspect.GitHubURL(labels)
+	if url != "" {
+		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
+	}
 }
