@@ -103,3 +103,10 @@ func (b *BaseCmd) GitTreeState() (string, error) {
 func (b *BaseCmd) Println(message string) {
 	fmt.Println(message)
 }
+
+// NewBaseCmd returns a new base command.
+func NewBaseCmd() BaseCmd {
+	return BaseCmd{
+		CommandRunner: util.DefaultCommandRunner{},
+	}
+}

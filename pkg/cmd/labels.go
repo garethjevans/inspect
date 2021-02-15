@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/garethjevans/inspect/pkg/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -21,9 +20,7 @@ type LabelsCmd struct {
 // NewLabelsCmd struct for the labels command.
 func NewLabelsCmd() *cobra.Command {
 	c := &LabelsCmd{
-		BaseCmd: BaseCmd{
-			CommandRunner: util.DefaultCommandRunner{},
-		},
+		BaseCmd: NewBaseCmd(),
 	}
 
 	c.Log = c
@@ -33,7 +30,6 @@ func NewLabelsCmd() *cobra.Command {
 		Short:   "Generates labels when creating an image",
 		Long:    "",
 		Example: "docker build $(inspect labels) ...",
-		Aliases: []string{"args"},
 		Run: func(cmd *cobra.Command, args []string) {
 			c.Cmd = cmd
 			c.Args = args
