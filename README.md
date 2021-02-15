@@ -5,7 +5,7 @@
 
 a small CLI can query the metadata of an image to try to determine its origin.
 
-currrently only works with images stored on dockerhub with their source stored on GitHub.
+currrently only works with generating comparision links to GitHub.
 
 ## To Install
 
