@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"github.com/garethjevans/inspect/pkg/registry"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/garethjevans/inspect/pkg/kube"
@@ -20,7 +21,7 @@ type ClusterCmd struct {
 	Cmd         *cobra.Command
 	Args        []string
 	ImageLister kube.ImageLister
-	LabelLister      registry.LabelLister
+	LabelLister registry.LabelLister
 
 	Namespace string
 }
@@ -69,10 +70,7 @@ func (c *ClusterCmd) Run() error {
 	// extract the labels for each
 	for _, a := range images {
 		logrus.Debugf("checking %s", a)
-		repo, tag, err := ParseRepo(a)
-		if err != nil {
-			return err
-		}
+		repo, tag := ParseRepo(a)
 
 		if repo == "" {
 			return errors.New("no repository has been configured")

@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"github.com/garethjevans/inspect/pkg/registry"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/garethjevans/inspect/pkg/util"
 
@@ -17,8 +18,8 @@ import (
 // ImageCmd struct for the image command.
 type ImageCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
+	Cmd         *cobra.Command
+	Args        []string
 	LabelLister registry.LabelLister
 }
 
@@ -51,10 +52,7 @@ func NewImageCmd() *cobra.Command {
 // Run runs the command.
 func (c *ImageCmd) Run() error {
 	for _, a := range c.Args {
-		repo, tag, err := ParseRepo(a)
-		if err != nil {
-			return err
-		}
+		repo, tag := ParseRepo(a)
 
 		if repo == "" {
 			return errors.New("no repository has been configured")

@@ -3,10 +3,7 @@ package cmd_test
 import (
 	"testing"
 
-	"github.com/garethjevans/inspect/pkg/cmd/mock"
-
-	"github.com/garethjevans/inspect/pkg/inspect"
-	"github.com/garethjevans/inspect/pkg/inspect/mocks"
+	"github.com/garethjevans/inspect/pkg/mocks"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
 	"github.com/stretchr/testify/assert"
@@ -58,23 +55,19 @@ func TestCheck(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.image, func(t *testing.T) {
-			logger := &mock.LoggerMock{}
-			mock := &mocks.MockClient{}
+			logger := &mocks.LoggerMock{}
+			labelLister := mocks.MockLabelLister{}
 
 			c := cmd.CheckCmd{
 				BaseCmd: cmd.BaseCmd{
 					Log: logger,
 				},
-				Client: inspect.Client{
-					Client: mock,
-				},
+				LabelLister: &labelLister,
 			}
 
 			cmd.Reset()
 
-			stubWithFixture(t, mock, "token.json")
-			stubWithFixture(t, mock, "manifests.1.0.0.json")
-			stubWithFixture(t, mock, tc.blobResponse)
+			labelLister.StubResponse(t, tc.image, "latest", tc.blobResponse)
 
 			c.Args = []string{tc.image}
 

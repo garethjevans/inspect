@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"github.com/garethjevans/inspect/pkg/registry"
 	"os"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/sirupsen/logrus"
@@ -51,10 +52,7 @@ func NewCheckCmd() *cobra.Command {
 func (c *CheckCmd) Run() error {
 	r := false
 	for _, a := range c.Args {
-		repo, tag, err := ParseRepo(a)
-		if err != nil {
-			return err
-		}
+		repo, tag := ParseRepo(a)
 
 		if repo == "" {
 			return errors.New("no repository has been configured")

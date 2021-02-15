@@ -1,15 +1,9 @@
 package cmd_test
 
 import (
-	"bytes"
-	"io/ioutil"
-	"path"
 	"testing"
 
-	"github.com/garethjevans/inspect/pkg/inspect"
-	"github.com/garethjevans/inspect/pkg/inspect/mocks"
-
-	"github.com/garethjevans/inspect/pkg/cmd/mock"
+	"github.com/garethjevans/inspect/pkg/mocks"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
 	"github.com/stretchr/testify/assert"
@@ -58,27 +52,20 @@ var (
 )
 
 func TestDiff(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := &mocks.MockLabelLister{}
 
 	c := cmd.DiffCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: labelLister,
 	}
 
 	cmd.Reset()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
-
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.1.0.json")
-	stubWithFixture(t, mock, "blobs.1.1.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.1.0", "blobs.1.1.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0", "jenkinsciinfra/terraform:1.1.0"}
 
@@ -91,28 +78,21 @@ func TestDiff(t *testing.T) {
 }
 
 func TestDiff_WithMarkdown(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := &mocks.MockLabelLister{}
 
 	c := cmd.DiffCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: labelLister,
 	}
 
 	cmd.Reset()
 	cmd.EnableMarkdown()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
-
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.1.0.json")
-	stubWithFixture(t, mock, "blobs.1.1.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.1.0", "blobs.1.1.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0", "jenkinsciinfra/terraform:1.1.0"}
 
@@ -122,14 +102,4 @@ func TestDiff_WithMarkdown(t *testing.T) {
 	assert.Equal(t, 2, len(logger.Messages))
 	assert.Equal(t, expectedDiffResponseMarkdown, logger.Messages[0])
 	assert.Equal(t, "https://github.com/jenkins-infra/docker-terraform/compare/ad902ec..441c261", logger.Messages[1])
-}
-
-func stubWithFixture(t *testing.T, mock *mocks.MockClient, file string) {
-	data, err := ioutil.ReadFile(path.Join("testdata", file))
-	assert.NoError(t, err)
-
-	// create a new reader with that JSON
-	r := ioutil.NopCloser(bytes.NewReader(data))
-
-	mock.StubResponse(200, r)
 }

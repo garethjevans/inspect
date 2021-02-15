@@ -3,10 +3,7 @@ package cmd_test
 import (
 	"testing"
 
-	"github.com/garethjevans/inspect/pkg/cmd/mock"
-
-	"github.com/garethjevans/inspect/pkg/inspect"
-	"github.com/garethjevans/inspect/pkg/inspect/mocks"
+	"github.com/garethjevans/inspect/pkg/mocks"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
 	"github.com/stretchr/testify/assert"
@@ -86,23 +83,19 @@ var (
 )
 
 func TestImage(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := mocks.MockLabelLister{}
 
 	c := cmd.ImageCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: &labelLister,
 	}
 
 	cmd.Reset()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 
@@ -114,24 +107,20 @@ func TestImage(t *testing.T) {
 }
 
 func TestImage_Raw(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := mocks.MockLabelLister{}
 
 	c := cmd.ImageCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: &labelLister,
 	}
 
 	cmd.Reset()
 	cmd.Raw()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 
@@ -143,24 +132,20 @@ func TestImage_Raw(t *testing.T) {
 }
 
 func TestImage_Markdown(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := mocks.MockLabelLister{}
 
 	c := cmd.ImageCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: &labelLister,
 	}
 
 	cmd.Reset()
 	cmd.EnableMarkdown()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 
@@ -172,24 +157,20 @@ func TestImage_Markdown(t *testing.T) {
 }
 
 func TestImage_NoHeaders(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := mocks.MockLabelLister{}
 
 	c := cmd.ImageCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: &labelLister,
 	}
 
 	cmd.Reset()
 	cmd.DisableHeaders()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.1.0.0.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 
@@ -201,23 +182,19 @@ func TestImage_NoHeaders(t *testing.T) {
 }
 
 func TestImage_NoLabels(t *testing.T) {
-	logger := &mock.LoggerMock{}
-	mock := &mocks.MockClient{}
+	logger := &mocks.LoggerMock{}
+	labelLister := mocks.MockLabelLister{}
 
 	c := cmd.ImageCmd{
 		BaseCmd: cmd.BaseCmd{
 			Log: logger,
 		},
-		Client: inspect.Client{
-			Client: mock,
-		},
+		LabelLister: &labelLister,
 	}
 
 	cmd.Reset()
 
-	stubWithFixture(t, mock, "token.json")
-	stubWithFixture(t, mock, "manifests.1.0.0.json")
-	stubWithFixture(t, mock, "blobs.no-labels.json")
+	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.no-labels.json")
 
 	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 

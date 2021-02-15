@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/garethjevans/inspect/pkg/registry"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/registry"
 
 	"github.com/garethjevans/inspect/pkg/util"
 
@@ -23,8 +24,8 @@ var (
 // DiffCmd a struct for the diff command.
 type DiffCmd struct {
 	BaseCmd
-	Cmd    *cobra.Command
-	Args   []string
+	Cmd         *cobra.Command
+	Args        []string
 	LabelLister registry.LabelLister
 }
 
@@ -62,15 +63,8 @@ func (c *DiffCmd) Run() error {
 	image2 := c.Args[1]
 
 	logrus.Debugf("comparing %s and %s", image1, image2)
-	repo1, tag1, err := ParseRepo(image1)
-	if err != nil {
-		return err
-	}
-
-	repo2, tag2, err := ParseRepo(image2)
-	if err != nil {
-		return err
-	}
+	repo1, tag1 := ParseRepo(image1)
+	repo2, tag2 := ParseRepo(image2)
 
 	if repo1 != repo2 {
 		return fmt.Errorf("images do not appear to be from the git repo 1=%s, 2=%s", repo1, repo2)

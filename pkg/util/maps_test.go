@@ -1,9 +1,10 @@
 package util_test
 
 import (
+	"testing"
+
 	"github.com/garethjevans/inspect/pkg/util"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestAllKeys(t *testing.T) {

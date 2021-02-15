@@ -2,9 +2,10 @@ package registry
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"strings"
 )
 
 type LabelLister interface {
@@ -12,7 +13,6 @@ type LabelLister interface {
 }
 
 type DefaultLabelLister struct {
-
 }
 
 func (d *DefaultLabelLister) Labels(repo string, version string) (map[string]string, error) {

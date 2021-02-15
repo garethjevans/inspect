@@ -1,4 +1,4 @@
-package mock
+package mocks
 
 // LoggerMock the mock logger.
 type LoggerMock struct {
