@@ -13,6 +13,8 @@ var (
 	expectedImageResponse = `+------------------------------------------+----------------------------------------------------------------+
 | LABEL                                    | VALUE                                                          |
 +------------------------------------------+----------------------------------------------------------------+
+| jenkinsciinfra/terraform                 | 1.0.0                                                          |
++------------------------------------------+----------------------------------------------------------------+
 | inspect.tree.state                       | clean                                                          |
 | io.jenkins-infra.tools                   | golang,terraform                                               |
 | io.jenkins-infra.tools.golang.version    | 1.15                                                           |
@@ -31,6 +33,7 @@ var (
 `
 
 	expectedImageResponseRaw = ` LABEL                                     VALUE                                                          
+ jenkinsciinfra/terraform                  1.0.0                                                          
  inspect.tree.state                        clean                                                          
  io.jenkins-infra.tools                    golang,terraform                                               
  io.jenkins-infra.tools.golang.version     1.15                                                           
@@ -48,6 +51,7 @@ var (
 
 	expectedImageResponseMarkdown = `| Label | Value |
 | --- | --- |
+| jenkinsciinfra/terraform | 1.0.0 |
 | inspect.tree.state | clean |
 | io.jenkins-infra.tools | golang,terraform |
 | io.jenkins-infra.tools.golang.version | 1.15 |
@@ -64,6 +68,8 @@ var (
 `
 
 	expectedImageResponseNoHeaders = `+------------------------------------------+----------------------------------------------------------------+
+| jenkinsciinfra/terraform                 | 1.0.0                                                          |
++------------------------------------------+----------------------------------------------------------------+
 | inspect.tree.state                       | clean                                                          |
 | io.jenkins-infra.tools                   | golang,terraform                                               |
 | io.jenkins-infra.tools.golang.version    | 1.15                                                           |

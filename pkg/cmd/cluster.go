@@ -2,12 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"sort"
 	"strings"
 
 	"github.com/garethjevans/inspect/pkg/registry"
 
-	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/garethjevans/inspect/pkg/kube"
 	"github.com/garethjevans/inspect/pkg/util"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -89,36 +87,10 @@ func (c *ClusterCmd) Run() error {
 			c.Log.Println("No labels found for " + a)
 		} else {
 			t := table.NewWriter()
-
 			sb := strings.Builder{}
 			t.SetOutputMirror(&sb)
-			t.SetStyle(tableStyle)
 
-			if headers {
-				t.AppendHeader(table.Row{"Label", "Value"})
-			}
-
-			t.AppendRow(table.Row{repo, tag})
-
-			if writeSeparators {
-				t.AppendSeparator()
-			}
-
-			keys := util.AllKeys(labels)
-			sort.Strings(keys)
-
-			for _, k := range keys {
-				t.AppendRow(table.Row{k, labels[k]})
-			}
-
-			if writeSeparators {
-				t.AppendSeparator()
-			}
-
-			url := inspect.GitHubURL(labels)
-			if url != "" {
-				t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
-			}
+			writeTableForImage(labels, t, repo, tag)
 
 			if enableMarkdown {
 				t.RenderMarkdown()
