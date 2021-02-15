@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	mocks2 "github.com/garethjevans/inspect/pkg/mocks"
+	"github.com/garethjevans/inspect/pkg/mocks"
 
 	"github.com/garethjevans/inspect/pkg/cmd"
 	"github.com/garethjevans/inspect/pkg/util"
@@ -12,9 +12,9 @@ import (
 )
 
 func TestBuildArgs(t *testing.T) {
-	logger := &mocks2.LoggerMock{}
-	commandRunner := &mocks2.MockCommandRunner{}
-	mocks2.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
+	logger := &mocks.LoggerMock{}
+	commandRunner := &mocks.MockCommandRunner{}
+	commandRunner.RunWithoutRetryFunc = func(c *util.Command) (string, error) {
 		t.Log(c.String())
 		if c.String() == gitRevParseShortHead {
 			return gitRevParseShortHeadOutput, nil
@@ -48,9 +48,9 @@ func TestBuildArgs(t *testing.T) {
 }
 
 func TestBuildArgs_WithGoVersion(t *testing.T) {
-	logger := &mocks2.LoggerMock{}
-	commandRunner := &mocks2.MockCommandRunner{}
-	mocks2.GetRunWithoutRetryFunc = func(c *util.Command) (string, error) {
+	logger := &mocks.LoggerMock{}
+	commandRunner := &mocks.MockCommandRunner{}
+	commandRunner.RunWithoutRetryFunc = func(c *util.Command) (string, error) {
 		t.Log(c.String())
 		if c.String() == gitRevParseShortHead {
 			return gitRevParseShortHeadOutput, nil

@@ -1,9 +1,10 @@
 package mocks_test
 
 import (
+	"testing"
+
 	"github.com/garethjevans/inspect/pkg/mocks"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestMockLabelLister(t *testing.T) {

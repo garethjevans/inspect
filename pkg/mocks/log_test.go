@@ -1,9 +1,10 @@
 package mocks_test
 
 import (
+	"testing"
+
 	"github.com/garethjevans/inspect/pkg/mocks"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestMockLogger(t *testing.T) {
@@ -15,4 +16,3 @@ func TestMockLogger(t *testing.T) {
 
 	assert.Equal(t, 3, len(logger.Messages))
 }
-
