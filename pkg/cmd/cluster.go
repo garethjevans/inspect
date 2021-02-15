@@ -115,7 +115,10 @@ func (c *ClusterCmd) Run() error {
 				t.AppendSeparator()
 			}
 
-			t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
+			url := inspect.GitHubURL(labels)
+			if url != "" {
+				t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
+			}
 
 			if enableMarkdown {
 				t.RenderMarkdown()
