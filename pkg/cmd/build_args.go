@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/garethjevans/inspect/pkg/util"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -20,9 +19,7 @@ type BuildArgsCmd struct {
 // NewBuildArgsCmd creates a new build args command.
 func NewBuildArgsCmd() *cobra.Command {
 	c := &BuildArgsCmd{
-		BaseCmd: BaseCmd{
-			CommandRunner: util.DefaultCommandRunner{},
-		},
+		BaseCmd: NewBaseCmd(),
 	}
 
 	c.Log = c

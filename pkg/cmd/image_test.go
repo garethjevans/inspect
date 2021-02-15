@@ -83,124 +83,78 @@ var (
 )
 
 func TestImage(t *testing.T) {
-	logger := &mocks.LoggerMock{}
-	labelLister := mocks.MockLabelLister{}
-
-	c := cmd.ImageCmd{
-		BaseCmd: cmd.BaseCmd{
-			Log: logger,
+	tests := []struct {
+		name           string
+		labelFile      string
+		expectedOutput string
+		testFunc       func()
+	}{
+		{
+			name:           "default",
+			labelFile:      "blobs.1.0.0.json",
+			expectedOutput: expectedImageResponse,
 		},
-		LabelLister: &labelLister,
+		{
+			name:           "raw",
+			labelFile:      "blobs.1.0.0.json",
+			expectedOutput: expectedImageResponseRaw,
+			testFunc: func() {
+				cmd.Raw()
+			},
+		},
+		{
+			name:           "markdown",
+			labelFile:      "blobs.1.0.0.json",
+			expectedOutput: expectedImageResponseMarkdown,
+			testFunc: func() {
+				cmd.EnableMarkdown()
+			},
+		},
+		{
+			name:           "no-headers",
+			labelFile:      "blobs.1.0.0.json",
+			expectedOutput: expectedImageResponseNoHeaders,
+			testFunc: func() {
+				cmd.DisableHeaders()
+			},
+		},
+		{
+			name:           "no-labels",
+			labelFile:      "blobs.no-labels.json",
+			expectedOutput: "No labels found for jenkinsciinfra/terraform:1.0.0",
+			testFunc: func() {
+				cmd.DisableHeaders()
+			},
+		},
 	}
 
-	cmd.Reset()
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			logger := &mocks.LoggerMock{}
+			labelLister := mocks.MockLabelLister{}
 
-	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
+			c := cmd.ImageCmd{
+				BaseCmd: cmd.BaseCmd{
+					Log: logger,
+				},
+				LabelLister: &labelLister,
+			}
 
-	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
+			cmd.Reset()
 
-	err := c.Run()
-	assert.NoError(t, err)
+			if tc.testFunc != nil {
+				tc.testFunc()
+			}
 
-	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, expectedImageResponse, logger.Messages[0])
-}
+			labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", tc.labelFile)
 
-func TestImage_Raw(t *testing.T) {
-	logger := &mocks.LoggerMock{}
-	labelLister := mocks.MockLabelLister{}
+			c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
 
-	c := cmd.ImageCmd{
-		BaseCmd: cmd.BaseCmd{
-			Log: logger,
-		},
-		LabelLister: &labelLister,
+			err := c.Run()
+			assert.NoError(t, err)
+
+			assert.Equal(t, 1, len(logger.Messages))
+			assert.Equal(t, tc.expectedOutput, logger.Messages[0])
+		})
 	}
-
-	cmd.Reset()
-	cmd.Raw()
-
-	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
-
-	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
-
-	err := c.Run()
-	assert.NoError(t, err)
-
-	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, expectedImageResponseRaw, logger.Messages[0])
-}
-
-func TestImage_Markdown(t *testing.T) {
-	logger := &mocks.LoggerMock{}
-	labelLister := mocks.MockLabelLister{}
-
-	c := cmd.ImageCmd{
-		BaseCmd: cmd.BaseCmd{
-			Log: logger,
-		},
-		LabelLister: &labelLister,
-	}
-
-	cmd.Reset()
-	cmd.EnableMarkdown()
-
-	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
-
-	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
-
-	err := c.Run()
-	assert.NoError(t, err)
-
-	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, expectedImageResponseMarkdown, logger.Messages[0])
-}
-
-func TestImage_NoHeaders(t *testing.T) {
-	logger := &mocks.LoggerMock{}
-	labelLister := mocks.MockLabelLister{}
-
-	c := cmd.ImageCmd{
-		BaseCmd: cmd.BaseCmd{
-			Log: logger,
-		},
-		LabelLister: &labelLister,
-	}
-
-	cmd.Reset()
-	cmd.DisableHeaders()
-
-	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.1.0.0.json")
-
-	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
-
-	err := c.Run()
-	assert.NoError(t, err)
-
-	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, expectedImageResponseNoHeaders, logger.Messages[0])
-}
-
-func TestImage_NoLabels(t *testing.T) {
-	logger := &mocks.LoggerMock{}
-	labelLister := mocks.MockLabelLister{}
-
-	c := cmd.ImageCmd{
-		BaseCmd: cmd.BaseCmd{
-			Log: logger,
-		},
-		LabelLister: &labelLister,
-	}
-
-	cmd.Reset()
-
-	labelLister.StubResponse(t, "jenkinsciinfra/terraform", "1.0.0", "blobs.no-labels.json")
-
-	c.Args = []string{"jenkinsciinfra/terraform:1.0.0"}
-
-	err := c.Run()
-	assert.NoError(t, err)
-
-	assert.Equal(t, 1, len(logger.Messages))
-	assert.Equal(t, "No labels found for jenkinsciinfra/terraform:1.0.0", logger.Messages[0])
 }
