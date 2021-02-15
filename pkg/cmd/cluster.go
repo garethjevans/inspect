@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"net/http"
+	"github.com/garethjevans/inspect/pkg/registry"
 	"sort"
 	"strings"
 
@@ -20,7 +20,7 @@ type ClusterCmd struct {
 	Cmd         *cobra.Command
 	Args        []string
 	ImageLister kube.ImageLister
-	Client      inspect.Client
+	LabelLister      registry.LabelLister
 
 	Namespace string
 }
@@ -31,9 +31,7 @@ func NewClusterCmd() *cobra.Command {
 		BaseCmd: BaseCmd{
 			CommandRunner: util.DefaultCommandRunner{},
 		},
-		Client: inspect.Client{
-			Client: &http.Client{},
-		},
+		LabelLister: &registry.DefaultLabelLister{},
 		ImageLister: &kube.Kuber{},
 	}
 
@@ -70,6 +68,7 @@ func (c *ClusterCmd) Run() error {
 
 	// extract the labels for each
 	for _, a := range images {
+		logrus.Debugf("checking %s", a)
 		repo, tag, err := ParseRepo(a)
 		if err != nil {
 			return err
@@ -83,7 +82,7 @@ func (c *ClusterCmd) Run() error {
 			return errors.New("no tag has been configured")
 		}
 
-		labels, err := c.Client.Labels(repo, tag)
+		labels, err := c.LabelLister.Labels(repo, tag)
 		if err != nil {
 			return err
 		}

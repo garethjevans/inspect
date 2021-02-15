@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"net/http"
+	"github.com/garethjevans/inspect/pkg/registry"
 	"sort"
 	"strings"
 
@@ -19,15 +19,13 @@ type ImageCmd struct {
 	BaseCmd
 	Cmd    *cobra.Command
 	Args   []string
-	Client inspect.Client
+	LabelLister registry.LabelLister
 }
 
 // NewImageCmd creates a new ImageCmd.
 func NewImageCmd() *cobra.Command {
 	c := &ImageCmd{
-		Client: inspect.Client{
-			Client: &http.Client{},
-		},
+		LabelLister: &registry.DefaultLabelLister{},
 	}
 	c.Log = c
 	cmd := &cobra.Command{
@@ -66,7 +64,7 @@ func (c *ImageCmd) Run() error {
 			return errors.New("no tag has been configured")
 		}
 
-		labels, err := c.Client.Labels(repo, tag)
+		labels, err := c.LabelLister.Labels(repo, tag)
 		if err != nil {
 			return err
 		}

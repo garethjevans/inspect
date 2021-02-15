@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"errors"
-	"net/http"
+	"github.com/garethjevans/inspect/pkg/registry"
 	"os"
 	"strings"
 
-	"github.com/garethjevans/inspect/pkg/inspect"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -17,16 +16,14 @@ type CheckCmd struct {
 	BaseCmd
 	Cmd                  *cobra.Command
 	Args                 []string
-	Client               inspect.Client
+	LabelLister          registry.LabelLister
 	FailOnRecommendation bool
 }
 
 // NewCheckCmd creates a new CheckCmd.
 func NewCheckCmd() *cobra.Command {
 	c := &CheckCmd{
-		Client: inspect.Client{
-			Client: &http.Client{},
-		},
+		LabelLister: &registry.DefaultLabelLister{},
 	}
 	c.Log = c
 	cmd := &cobra.Command{
@@ -67,7 +64,7 @@ func (c *CheckCmd) Run() error {
 			return errors.New("no tag has been configured")
 		}
 
-		labels, err := c.Client.Labels(repo, tag)
+		labels, err := c.LabelLister.Labels(repo, tag)
 		if err != nil {
 			return err
 		}

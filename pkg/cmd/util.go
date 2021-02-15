@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -26,13 +25,13 @@ func ParseRepo(in string) (string, string, error) {
 }
 
 func validate(repository string, tag string) (string, string, error) {
-	if strings.Count(repository, "/") > 1 {
-		if !strings.HasPrefix(repository, "docker.io/") {
-			return "", tag, fmt.Errorf("image hosted at registry %s not supported", repository)
-		}
-	}
-	if !strings.Contains(repository, "/") {
-		return "library/" + repository, tag, nil
-	}
+	//if strings.Count(repository, "/") > 1 {
+	//	if !strings.HasPrefix(repository, "docker.io/") {
+	//		return "", tag, fmt.Errorf("image hosted at registry %s not supported", repository)
+	//	}
+	//}
+	//if !strings.Contains(repository, "/") {
+	//	return "library/" + repository, tag, nil
+	//}
 	return repository, tag, nil
 }
