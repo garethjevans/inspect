@@ -15,3 +15,10 @@ func TestContains(t *testing.T) {
 	assert.True(t, util.Contains(strings, "three"))
 	assert.False(t, util.Contains(strings, "four"))
 }
+
+func TestUnique(t *testing.T) {
+	strings := []string{"one", "two", "three", "one", "two"}
+
+	assert.Equal(t, 3, len(util.Unqiue(strings)))
+	assert.Equal(t, []string{"one", "two", "three"}, util.Unqiue(strings))
+}
