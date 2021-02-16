@@ -22,7 +22,7 @@ docker run -it garethjevans/inspect
 
 ## Usage
 
-To inspect an image
+### To inspect an image
 
 ```
 inspect image <image>
@@ -56,7 +56,7 @@ Will produce an output similar to:
 +------------------------------------------+----------------------------------------------------------------+
 ```
 
-To perform a diff between two images: 
+### To perform a diff between two images: 
 
 ```
 inspect diff jenkinsciinfra/terraform:1.0.0 jenkinsciinfra/terraform:1.1.0
@@ -85,6 +85,18 @@ Will produce output like:
 | GitHub URL                               | https://github.com/jenkins-infra/docker-terraform/tree/ad902ec | https://github.com/jenkins-infra/docker-terraform/tree/441c261 |
 +------------------------------------------+----------------------------------------------------------------+----------------------------------------------------------------+
 https://github.com/jenkins-infra/docker-terraform/compare/ad902ec..441c261
+```
+
+### To inspect all images in a cluster, or namespace
+
+```
+inspect cluster [--namespace mynamespace]
+```
+
+### To compare all images in two namespaces in a cluster
+
+```
+inspect diff-namespace staging production
 ```
 
 ## Documentation
