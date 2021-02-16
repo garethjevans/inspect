@@ -99,6 +99,31 @@ inspect cluster [--namespace mynamespace]
 inspect diff-namespace staging production
 ```
 
+### To check that an image contains all recommended labels
+
+```
+inspect check <image>
+```
+
+e.g.
+
+```
+inspect check garethjevans/inspect:0.0.9
++-----------------------------------+---------+---------------------------------------------------------------------+
+| LABEL                             | OK      | RECOMMENDATION                                                      |
++-----------------------------------+---------+---------------------------------------------------------------------+
+| org.opencontainers.image.created  | OK      |                                                                     |
+| org.opencontainers.image.revision | OK      |                                                                     |
+| org.opencontainers.image.source   | OK      |                                                                     |
+| org.opencontainers.image.url      | OK      |                                                                     |
+| org.label-schema.build-date       | OK      |                                                                     |
+| org.label-schema.vcs-ref          | OK      |                                                                     |
+| org.label-schema.vcs-url          | OK      |                                                                     |
+| org.label-schema.url              | OK      |                                                                     |
+| inspect.tree.state                | Missing | test -z "$(git status --porcelain)" && echo "clean" || echo "dirty" |
++-----------------------------------+---------+---------------------------------------------------------------------+
+```
+
 ## Documentation
 
 More indepth documentaion can be found [here](./docs/inspect.md)
