@@ -9,3 +9,14 @@ func Contains(in []string, val string) (ret bool) {
 	}
 	return
 }
+
+// Unique returns a unique array of strings.
+func Unqiue(in []string) []string {
+	out := []string{}
+	for _, i := range in {
+		if !Contains(out, i) {
+			out = append(out, i)
+		}
+	}
+	return out
+}
