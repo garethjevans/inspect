@@ -1,8 +1,11 @@
 package cmd
 
 import (
+	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/garethjevans/inspect/pkg/inspect"
 
 	"github.com/garethjevans/inspect/pkg/kube"
 	"github.com/garethjevans/inspect/pkg/registry"
@@ -12,6 +15,12 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
+
+type comparison struct {
+	image string
+	tag1  string
+	tag2  string
+}
 
 // DiffNamespaceCmd a struct for the diff namespace command.
 type DiffNamespaceCmd struct {
@@ -94,17 +103,55 @@ func (c *DiffNamespaceCmd) Run() error {
 	t.AppendRow(table.Row{"", namespace1, namespace2})
 	t.AppendSeparator()
 
+	toCompare := []comparison{}
+
 	// loop through
 	for _, i := range unqiueImageNames {
-		t.AppendRow(table.Row{i, locateVersion(imagesInNamespace1, i), locateVersion(imagesInNamespace2, i)})
+		versionInNamespace1 := locateVersion(imagesInNamespace1, i)
+		versionInNamespace2 := locateVersion(imagesInNamespace2, i)
+		t.AppendRow(table.Row{i, versionInNamespace1, versionInNamespace2})
+
+		if versionInNamespace1 != "" && versionInNamespace2 != "" && versionInNamespace1 != versionInNamespace2 {
+			logrus.Debugf("need to run comparison between %s:%s and %s:%s", i, versionInNamespace1, i, versionInNamespace2)
+			toCompare = append(toCompare, comparison{image: i, tag1: versionInNamespace1, tag2: versionInNamespace2})
+		}
 	}
 
 	t.Render()
-
 	c.Log.Println(sb.String())
-	// if image appears in both, perform diff
 
-	// else
+	for _, compare := range toCompare {
+		t := table.NewWriter()
+		sb := strings.Builder{}
+		t.SetOutputMirror(&sb)
+
+		labels1, err := c.LabelLister.Labels(compare.image, compare.tag1)
+		if err != nil {
+			return err
+		}
+
+		labels2, err := c.LabelLister.Labels(compare.image, compare.tag2)
+		if err != nil {
+			return err
+		}
+
+		writeDiffTableForImages(labels1, labels2, t, compare.image, compare.tag1, compare.tag2)
+
+		if enableMarkdown {
+			t.RenderMarkdown()
+		} else {
+			t.Render()
+		}
+
+		// write the table
+		c.Log.Println(sb.String())
+
+		// write the compare link
+		rev1, rev2 := inspect.Revision(labels1), inspect.Revision(labels2)
+		if rev1 != "" && rev2 != "" {
+			c.Log.Println(fmt.Sprintf("%s/compare/%s..%s", inspect.BaseURL(labels1), inspect.Revision(labels1), inspect.Revision(labels2)))
+		}
+	}
 
 	return nil
 }

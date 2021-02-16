@@ -27,7 +27,10 @@ func (m *MockLabelLister) Labels(repo string, tag string) (map[string]string, er
 	key := fmt.Sprintf("%s-%s", repo, tag)
 	logrus.Infof("got request for key '%s'", key)
 
-	file := m.Requests[key]
+	file, ok := m.Requests[key]
+	if !ok {
+		panic("unexpected call to Labels(" + repo + "," + tag + ")")
+	}
 
 	data, err := ioutil.ReadFile(path.Join("testdata", file))
 	if err != nil {

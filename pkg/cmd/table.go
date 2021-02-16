@@ -76,3 +76,46 @@ func writeTableForImage(labels map[string]string, t table.Writer, repo string, t
 		t.AppendRow(table.Row{"GitHub URL", inspect.GitHubURL(labels)})
 	}
 }
+
+func writeDiffTableForImages(labels1 map[string]string, labels2 map[string]string, t table.Writer, repo string, tag1 string, tag2 string) {
+	t.SetStyle(tableStyle)
+
+	if headers {
+		t.AppendHeader(table.Row{"Image", "1", "2"})
+	}
+
+	if writeSeparators {
+		t.AppendSeparator()
+	}
+
+	t.AppendRow(table.Row{repo, tag1, tag2})
+
+	if writeSeparators {
+		t.AppendSeparator()
+	}
+
+	keys := util.AllKeys(labels1, labels2)
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		if labels1[k] == labels2[k] {
+			t.AppendRow(table.Row{k, labels1[k], labels2[k]})
+		} else {
+			t.AppendRow(table.Row{k, colorError(labels1[k]), colorError(labels2[k])})
+		}
+	}
+
+	if writeSeparators {
+		t.AppendSeparator()
+	}
+
+	ghURL1, ghURL2 := inspect.GitHubURL(labels1), inspect.GitHubURL(labels2)
+
+	if ghURL1 != "" && ghURL2 != "" {
+		t.AppendRow(table.Row{
+			"GitHub URL",
+			inspect.GitHubURL(labels1),
+			inspect.GitHubURL(labels2),
+		})
+	}
+}
