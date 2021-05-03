@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/fatih/color v1.10.0
-	github.com/google/go-containerregistry v0.4.1
+	github.com/google/go-containerregistry v0.5.0
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/jedib0t/go-pretty/v6 v6.2.1
 	github.com/sirupsen/logrus v1.8.1
