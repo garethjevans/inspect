@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.12.0
 	github.com/google/go-containerregistry v0.5.1
 	github.com/imdario/mergo v0.3.11 // indirect
-	github.com/jedib0t/go-pretty/v6 v6.2.2
+	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
