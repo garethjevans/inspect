@@ -34,7 +34,6 @@ linters-settings:
   gocyclo:
     min-complexity: 30
   goimports:
-  golint:
     min-confidence: 0
   gomnd:
     settings:
@@ -53,8 +52,6 @@ linters-settings:
           - (github.com/jenkins-x/jx-logging/pkg/log/Logger()).Fatalf
   lll:
     line-length: 140
-  maligned:
-    suggest-new: true
   misspell:
   nolintlint:
     allow-leading-space: true # don't require machine-readable nolint directives (i.e. with no leading space)
@@ -79,13 +76,10 @@ linters:
     - godot
     - gofmt
     - goimports
-    - golint
     - goprintffuncname
     - gosec
     - gosimple
     - ineffassign
-    - interfacer
-    - maligned
     - misspell
     - nakedret
     - nolintlint

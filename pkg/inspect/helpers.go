@@ -25,9 +25,7 @@ func GitHubURL(labels map[string]string) string {
 // BaseURL Gets the base source url without the .git suffix.
 func BaseURL(labels map[string]string) string {
 	gitURL := SourceURL(labels)
-	if strings.HasSuffix(gitURL, ".git") {
-		gitURL = strings.TrimSuffix(gitURL, ".git")
-	}
+	gitURL = strings.TrimSuffix(gitURL, ".git")
 	return gitURL
 }
 
