@@ -7,7 +7,7 @@ require (
 	github.com/google/go-containerregistry v0.8.0
 	github.com/jedib0t/go-pretty/v6 v6.2.7
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
 	k8s.io/apimachinery v0.23.4
