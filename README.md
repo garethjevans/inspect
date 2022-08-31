@@ -5,7 +5,7 @@
 
 a small CLI can query the metadata of an image to try to determine its origin.
 
-currrently only works with generating comparision links to GitHub.
+currently only works with generating comparison links to GitHub.
 
 ## To Install
 
@@ -126,4 +126,4 @@ inspect check garethjevans/inspect:0.0.9
 
 ## Documentation
 
-More indepth documentaion can be found [here](./docs/inspect.md)
+More in-depth documentation can be found [here](./docs/inspect.md)

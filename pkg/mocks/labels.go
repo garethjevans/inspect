@@ -3,7 +3,7 @@ package mocks
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 
@@ -32,7 +32,7 @@ func (m *MockLabelLister) Labels(repo string, tag string) (map[string]string, er
 		panic("unexpected call to Labels(" + repo + "," + tag + ")")
 	}
 
-	data, err := ioutil.ReadFile(path.Join("testdata", file))
+	data, err := os.ReadFile(path.Join("testdata", file))
 	if err != nil {
 		return nil, err
 	}

@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"reflect"
 	"strings"
 )
 
@@ -172,29 +173,29 @@ func (d *DefaultCommandRunner) run(c *Command) (string, error) {
 		for k, v := range c.Env {
 			m[k] = v
 		}
-		envVars := []string{}
+		var envVars []string
 		for k, v := range m {
-			envVars = append(envVars, k+"="+v)
+			envVars = append(envVars, fmt.Sprintf("%s=%s", k, v))
 		}
 		e.Env = envVars
 	}
 
-	if c.Out != nil {
+	if !reflect.ValueOf(c.Out).IsNil() {
 		e.Stdout = c.Out
 	}
 
-	if c.Err != nil {
+	if !reflect.ValueOf(c.Err).IsNil() {
 		e.Stderr = c.Err
 	}
 
-	if c.In != nil {
+	if !reflect.ValueOf(c.In).IsNil() {
 		e.Stdin = c.In
 	}
 
 	var text string
 	var err error
 
-	if c.Out != nil {
+	if !reflect.ValueOf(c.Out).IsNil() {
 		err := e.Run()
 		if err != nil {
 			return text, CommandError{

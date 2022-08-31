@@ -64,7 +64,6 @@ linters:
   disable-all: true
   enable:
     - asciicheck
-    - deadcode
     - depguard
     - dogsled
     - dupl
@@ -83,15 +82,12 @@ linters:
     - misspell
     - nakedret
     - nolintlint
-    - rowserrcheck
-    - structcheck
     - stylecheck
     - testpackage
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - whitespace
   # don't enable:
   # - bodyclose https://github.com/timakin/bodyclose/issues/30
