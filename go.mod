@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/fatih/color v1.14.1
-	github.com/google/go-containerregistry v0.12.1
+	github.com/google/go-containerregistry v0.13.0
 	github.com/jedib0t/go-pretty/v6 v6.4.4
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
@@ -35,6 +35,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/klauspost/compress v1.15.11 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
