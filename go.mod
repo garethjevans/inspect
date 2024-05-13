@@ -3,7 +3,7 @@ module github.com/garethjevans/inspect
 go 1.19
 
 require (
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/google/go-containerregistry v0.19.1
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/sirupsen/logrus v1.9.3
